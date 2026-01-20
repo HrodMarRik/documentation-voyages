@@ -12,21 +12,54 @@ COLLATE utf8mb4_unicode_ci;
 USE gestion_db;
 
 -- ============================================
+-- ÉTABLISSEMENTS SCOLAIRES (créés en premier car référencés par users)
+-- ============================================
+
+CREATE TABLE schools (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    school_type ENUM('primary', 'middle', 'high', 'college', 'other') DEFAULT 'other',
+    address VARCHAR(255),
+    city VARCHAR(100),
+    postal_code VARCHAR(20),
+    country VARCHAR(100) DEFAULT 'France',
+    phone VARCHAR(50),
+    website VARCHAR(255),
+    -- Intégration Odoo
+    odoo_partner_id INT,
+    odoo_contact_id INT,
+    -- Métadonnées
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_schools_city (city),
+    INDEX idx_schools_is_active (is_active),
+    INDEX idx_schools_odoo_partner_id (odoo_partner_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
 -- AUTHENTIFICATION & AUTORISATION
 -- ============================================
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255),
     first_name VARCHAR(100),
     last_name VARCHAR(100),
+    phone VARCHAR(50),
+    -- Champs spécifiques selon le rôle
+    school_id INT,
+    date_of_birth DATE,
+    -- Métadonnées
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL,
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE SET NULL,
     INDEX idx_users_email (email),
-    INDEX idx_users_is_active (is_active)
+    INDEX idx_users_is_active (is_active),
+    INDEX idx_users_school_id (school_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE roles (
@@ -87,37 +120,10 @@ CREATE TABLE two_factor_auth (
     INDEX idx_two_factor_auth_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ============================================
--- ÉTABLISSEMENTS SCOLAIRES
--- ============================================
-
-CREATE TABLE schools (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    school_type ENUM('primary', 'middle', 'high', 'college', 'other') DEFAULT 'other',
-    address VARCHAR(255),
-    city VARCHAR(100),
-    postal_code VARCHAR(20),
-    country VARCHAR(100) DEFAULT 'France',
-    phone VARCHAR(50),
-    website VARCHAR(255),
-    -- Intégration Odoo
-    odoo_partner_id INT,
-    odoo_contact_id INT,
-    -- Métadonnées
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_schools_city (city),
-    INDEX idx_schools_is_active (is_active),
-    INDEX idx_schools_odoo_partner_id (odoo_partner_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE contacts (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    school_id INT,
-    contact_name VARCHAR(255),
-    contact_role VARCHAR(100),
+    user_id INT NOT NULL,
     -- Mailing avancé
     email_primary VARCHAR(255),
     email_secondary VARCHAR(255),
@@ -147,8 +153,8 @@ CREATE TABLE contacts (
     is_primary BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE SET NULL,
-    INDEX idx_contacts_school_id (school_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_contacts_user_id (user_id),
     INDEX idx_contacts_email_primary (email_primary),
     INDEX idx_contacts_whatsapp_phone_primary (whatsapp_phone_primary),
     INDEX idx_contacts_email_marketing_consent (email_marketing_consent),
@@ -158,6 +164,20 @@ CREATE TABLE contacts (
     INDEX idx_contacts_is_active (is_active),
     INDEX idx_contacts_is_primary (is_primary),
     INDEX idx_contacts_odoo_partner_id (odoo_partner_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table de liaison entre écoles et users (contacts de l'école)
+CREATE TABLE school_users (
+    school_id INT NOT NULL,
+    user_id INT NOT NULL,
+    role_at_school VARCHAR(100),
+    is_primary BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (school_id, user_id),
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_school_users_school_id (school_id),
+    INDEX idx_school_users_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE contact_history (
@@ -175,25 +195,10 @@ CREATE TABLE contact_history (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
--- PROFESSEURS & VOYAGES
+-- VOYAGES
 -- ============================================
-
-CREATE TABLE teachers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    phone VARCHAR(50),
-    school_id INT,
-    odoo_partner_id INT,
-    odoo_contact_id INT,
-    form_data JSON,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE SET NULL,
-    INDEX idx_teachers_email (email),
-    INDEX idx_teachers_school_id (school_id),
-    INDEX idx_teachers_odoo_partner_id (odoo_partner_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Note: Les professeurs sont maintenant des users avec le rôle "teacher"
+-- Note: Les étudiants sont maintenant des users avec le rôle "student"
 
 CREATE TABLE destinations (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -265,7 +270,7 @@ CREATE TABLE travels (
     number_participants INT,
     status ENUM('draft', 'quote_sent', 'quote_validated', 'confirmed', 'in_progress', 'completed', 'cancelled') NOT NULL DEFAULT 'draft',
     total_price DECIMAL(10,2) NOT NULL DEFAULT 0.0,
-    teacher_id INT,
+    teacher_user_id INT,
     odoo_lead_id INT,
     odoo_quote_id INT,
     odoo_invoice_id INT,
@@ -275,9 +280,9 @@ CREATE TABLE travels (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (destination_id) REFERENCES destinations(id) ON DELETE SET NULL,
     FOREIGN KEY (program_template_id) REFERENCES program_templates(id) ON DELETE SET NULL,
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE SET NULL,
+    FOREIGN KEY (teacher_user_id) REFERENCES users(id) ON DELETE SET NULL,
     FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL,
-    INDEX idx_travels_teacher_id (teacher_id),
+    INDEX idx_travels_teacher_user_id (teacher_user_id),
     INDEX idx_travels_created_by_user_id (created_by_user_id),
     INDEX idx_travels_status (status),
     INDEX idx_travels_travel_type (travel_type),
@@ -436,11 +441,7 @@ CREATE TABLE invoice_lines (
 CREATE TABLE bookings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     travel_id INT NOT NULL,
-    school_id INT,
-    participant_name VARCHAR(255) NOT NULL,
-    age INT,
-    email VARCHAR(255),
-    phone VARCHAR(50),
+    student_user_id INT,
     price DECIMAL(10,2) NOT NULL,
     status ENUM('pending', 'confirmed', 'cancelled') NOT NULL DEFAULT 'pending',
     payment_status ENUM('pending', 'paid', 'failed', 'refunded') NOT NULL DEFAULT 'pending',
@@ -449,9 +450,9 @@ CREATE TABLE bookings (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (travel_id) REFERENCES travels(id) ON DELETE CASCADE,
-    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE SET NULL,
+    FOREIGN KEY (student_user_id) REFERENCES users(id) ON DELETE SET NULL,
     INDEX idx_bookings_travel_id (travel_id),
-    INDEX idx_bookings_school_id (school_id),
+    INDEX idx_bookings_student_user_id (student_user_id),
     INDEX idx_bookings_status (status),
     INDEX idx_bookings_payment_status (payment_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -491,16 +492,7 @@ CREATE TABLE travel_documents (
 -- ============================================
 -- VOYAGES LINGUISTIQUES
 -- ============================================
-
-CREATE TABLE guests (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    phone VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_guests_email (email)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Note: Les guests sont maintenant des users avec le rôle "guest"
 
 CREATE TABLE linguistic_travels (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -519,13 +511,13 @@ CREATE TABLE linguistic_travels (
 
 CREATE TABLE linguistic_travel_registrations (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    guest_id INT NOT NULL,
+    guest_user_id INT NOT NULL,
     linguistic_travel_id INT NOT NULL,
     status VARCHAR(50) NOT NULL,
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (guest_id) REFERENCES guests(id) ON DELETE CASCADE,
+    FOREIGN KEY (guest_user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (linguistic_travel_id) REFERENCES linguistic_travels(id) ON DELETE CASCADE,
-    INDEX idx_linguistic_travel_registrations_guest_id (guest_id),
+    INDEX idx_linguistic_travel_registrations_guest_user_id (guest_user_id),
     INDEX idx_linguistic_travel_registrations_linguistic_travel_id (linguistic_travel_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -537,30 +529,27 @@ CREATE TABLE linguistic_travel_registrations (
 -- Ce script crée des écoles à partir des champs texte de teachers
 -- et met à jour les références
 
--- Étape 1 : Créer les écoles à partir des données teachers
-INSERT INTO schools (name, city, postal_code, address, created_at)
-SELECT DISTINCT
-    t.school AS name,
-    t.school_city AS city,
-    t.school_postal_code AS postal_code,
-    t.school_address AS address,
-    MIN(t.created_at) AS created_at
-FROM teachers t
-WHERE t.school IS NOT NULL 
-  AND t.school != ''
-GROUP BY t.school, t.school_city, t.school_postal_code, t.school_address;
+-- ============================================
+-- MIGRATION DES DONNÉES EXISTANTES
+-- ============================================
 
--- Étape 2 : Mettre à jour teachers.school_id avec les nouveaux IDs
-UPDATE teachers t
-INNER JOIN schools s ON 
-    (t.school = s.name OR (t.school IS NULL AND s.name IS NULL))
-    AND (t.school_city = s.city OR (t.school_city IS NULL AND s.city IS NULL))
-    AND (t.school_postal_code = s.postal_code OR (t.school_postal_code IS NULL AND s.postal_code IS NULL))
-SET t.school_id = s.id
-WHERE t.school IS NOT NULL AND t.school != '';
+-- Note: Migration depuis l'ancienne structure vers la nouvelle structure unifiée
+-- Les teachers, guests, et contacts deviennent tous des users avec des rôles appropriés
+-- Les contacts de mailing/WhatsApp sont dans la table contacts liée aux users
 
--- Note : Après migration, les colonnes school, school_address, school_city, school_postal_code
--- peuvent être supprimées avec ALTER TABLE teachers DROP COLUMN school, etc.
+-- Étape 1 : Créer les écoles à partir des données teachers (si table teachers existe encore)
+-- INSERT INTO schools (name, city, postal_code, address, created_at)
+-- SELECT DISTINCT ...
 
--- Note : Les contacts de mailing et WhatsApp doivent être créés séparément dans la table contacts
--- et liés aux écoles via contacts.school_id
+-- Étape 2 : Migrer teachers vers users avec rôle "teacher"
+-- INSERT INTO users (email, first_name, last_name, phone, school_id, created_at)
+-- SELECT email, name, '', phone, school_id, created_at FROM teachers;
+-- INSERT INTO user_roles (user_id, role_id) SELECT u.id, r.id FROM users u, roles r WHERE r.name = 'teacher';
+
+-- Étape 3 : Migrer guests vers users avec rôle "guest"
+-- INSERT INTO users (email, first_name, last_name, phone, created_at)
+-- SELECT email, first_name, last_name, phone, created_at FROM guests;
+-- INSERT INTO user_roles (user_id, role_id) SELECT u.id, r.id FROM users u, roles r WHERE r.name = 'guest';
+
+-- Étape 4 : Créer les contacts pour les users qui ont besoin de mailing/WhatsApp
+-- Les contacts sont liés aux users via contacts.user_id
