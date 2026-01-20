@@ -18,13 +18,14 @@ erDiagram
     USER ||--|| TWO_FACTOR_AUTH : "a"
     
     %% Établissements Scolaires
-    SCHOOL ||--o{ TEACHER : "emploie"
-    SCHOOL ||--o{ BOOKING : "a"
-    SCHOOL ||--o{ CONTACT : "a"
+    SCHOOL ||--o{ USER : "a"
+    SCHOOL ||--o{ SCHOOL_USER : "lie"
+    USER ||--o{ SCHOOL_USER : "lie"
+    USER ||--|| CONTACT : "a"
     CONTACT ||--o{ CONTACT_HISTORY : "a"
     
-    %% Professeurs & Voyages
-    TEACHER ||--o{ TRAVEL : "crée"
+    %% Voyages
+    USER ||--o{ TRAVEL : "crée"
     TRAVEL ||--o{ TRAVEL_STATUS_HISTORY : "a"
     
     %% Destinations & Activités
@@ -54,13 +55,14 @@ erDiagram
     
     %% Réservations & Contacts
     TRAVEL ||--o{ BOOKING : "a"
+    USER ||--o{ BOOKING : "est"
     BOOKING ||--|| PARENT_CONTACT : "a"
     
     %% Documents
     TRAVEL ||--o{ TRAVEL_DOCUMENT : "a"
     
     %% Voyages Linguistiques
-    GUEST ||--o{ LINGUISTIC_TRAVEL_REGISTRATION : "s'inscrit"
+    USER ||--o{ LINGUISTIC_TRAVEL_REGISTRATION : "s'inscrit"
     LINGUISTIC_TRAVEL ||--o{ LINGUISTIC_TRAVEL_REGISTRATION : "reçoit"
     DESTINATION ||--o{ LINGUISTIC_TRAVEL : "pour"
     
@@ -70,10 +72,21 @@ erDiagram
         VARCHAR password_hash
         VARCHAR first_name
         VARCHAR last_name
+        VARCHAR phone
+        INTEGER school_id FK
+        DATE date_of_birth
         BOOLEAN is_active
         TIMESTAMP created_at
         TIMESTAMP updated_at
         TIMESTAMP last_login
+    }
+    
+    SCHOOL_USER {
+        INTEGER school_id FK
+        INTEGER user_id FK
+        VARCHAR role_at_school
+        BOOLEAN is_primary
+        TIMESTAMP created_at
     }
     
     ROLE {
@@ -133,9 +146,7 @@ erDiagram
     
     CONTACT {
         INTEGER id PK
-        INTEGER school_id FK
-        VARCHAR contact_name
-        VARCHAR contact_role
+        INTEGER user_id FK
         VARCHAR email_primary
         VARCHAR email_secondary
         BOOLEAN email_marketing_consent
@@ -172,19 +183,6 @@ erDiagram
         TIMESTAMP created_at
     }
     
-    TEACHER {
-        INTEGER id PK
-        VARCHAR name
-        VARCHAR email UK
-        VARCHAR phone
-        INTEGER school_id FK
-        INTEGER odoo_partner_id
-        INTEGER odoo_contact_id
-        JSON form_data
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
-    
     TRAVEL {
         INTEGER id PK
         VARCHAR name
@@ -198,7 +196,7 @@ erDiagram
         INTEGER number_participants
         ENUM status
         DECIMAL total_price
-        INTEGER teacher_id FK
+        INTEGER teacher_user_id FK
         INTEGER odoo_lead_id
         INTEGER odoo_quote_id
         INTEGER odoo_invoice_id
@@ -358,11 +356,7 @@ erDiagram
     BOOKING {
         INTEGER id PK
         INTEGER travel_id FK
-        INTEGER school_id FK
-        VARCHAR participant_name
-        INTEGER age
-        VARCHAR email
-        VARCHAR phone
+        INTEGER student_user_id FK
         DECIMAL price
         ENUM status
         ENUM payment_status
@@ -395,15 +389,6 @@ erDiagram
         TIMESTAMP uploaded_at
     }
     
-    GUEST {
-        INTEGER id PK
-        VARCHAR email UK
-        VARCHAR first_name
-        VARCHAR last_name
-        VARCHAR phone
-        TIMESTAMP created_at
-    }
-    
     LINGUISTIC_TRAVEL {
         INTEGER id PK
         VARCHAR title
@@ -418,7 +403,7 @@ erDiagram
     
     LINGUISTIC_TRAVEL_REGISTRATION {
         INTEGER id PK
-        INTEGER guest_id FK
+        INTEGER guest_user_id FK
         INTEGER linguistic_travel_id FK
         VARCHAR status
         TIMESTAMP registered_at
