@@ -75,59 +75,91 @@ flowchart TD
 
 ## 3. Génération Devis Automatique
 
+### Vue d'Ensemble
+
 ```mermaid
 flowchart TD
-    Start([Start]) --> Receive[Recevoir travel_id]
-    Receive --> GetTravel[Récupérer Travel + Destinations]
-    GetTravel --> GetTemplate[Récupérer ProgramTemplate si validé]
-    GetTemplate --> Init[Initialiser total_amount = 0]
+    Start([Start]) --> Init[Initialiser calcul]
+    Init --> CalcTransport[Calcul Transport]
+    CalcTransport --> CalcActivities[Calcul Activités]
+    CalcActivities --> CalcLodging[Calcul Hébergement]
+    CalcLodging --> ApplyReductions[Application Réductions]
+    ApplyReductions --> ApplyMargin[Application Marge]
+    ApplyMargin --> CreateQuote[Créer Quote]
+    CreateQuote --> End([End])
+```
+
+### Détails du Calcul
+
+#### 3.1 Calcul Transport
+
+```mermaid
+flowchart TD
+    Start([Start]) --> Loop[Pour chaque TravelDestination]
+    Loop --> GetPrice[Récupérer TransportPrice<br/>destination_id, date]
+    GetPrice --> Calc[Calculer: price × participants]
+    Calc --> Add[Ajouter à total_amount]
+    Add --> Next{Autre destination?}
+    Next -->|Oui| Loop
+    Next -->|Non| End([Fin])
+```
+
+#### 3.2 Calcul Activités
+
+```mermaid
+flowchart TD
+    Start([Start]) --> Check{ProgramTemplate validé?}
+    Check -->|Non| End([Fin])
+    Check -->|Oui| Loop[Pour chaque ProgramTemplateActivity]
+    Loop --> GetPrice[Récupérer Activity.price]
+    GetPrice --> Calc[Calculer: price × participants]
+    Calc --> Add[Ajouter à total_amount]
+    Add --> Next{Autre activité?}
+    Next -->|Oui| Loop
+    Next -->|Non| End
+```
+
+#### 3.3 Calcul Hébergement
+
+```mermaid
+flowchart TD
+    Start([Start]) --> Check{lodging_price_per_person renseigné?}
+    Check -->|Non| End([Fin])
+    Check -->|Oui| Calc[Calculer: lodging_price × participants × jours]
+    Calc --> Add[Ajouter à total_amount]
+    Add --> End
+```
+
+#### 3.4 Application Réductions
+
+```mermaid
+flowchart TD
+    Start([Start]) --> Check30{participants ≥ 30?}
+    Check30 -->|Oui| Reduce10[total_amount × 0.90<br/>10% réduction]
+    Check30 -->|Non| Check20{participants ≥ 20?}
+    Check20 -->|Oui| Reduce5[total_amount × 0.95<br/>5% réduction]
+    Check20 -->|Non| Check10{participants ≥ 10?}
+    Check10 -->|Oui| Reduce3[total_amount × 0.97<br/>3% réduction]
+    Check10 -->|Non| CheckEarly
     
-    Init --> TransportCalc[Calcul Transport]
-    TransportCalc --> TransportLoop[Pour chaque TravelDestination]
-    TransportLoop --> GetPrice[Récupérer TransportPrice<br/>destination_id, date]
-    GetPrice --> CalcTransport[Calculer: price × participants]
-    CalcTransport --> AddTransport[Ajouter à total_amount]
+    Reduce10 --> CheckEarly
+    Reduce5 --> CheckEarly
+    Reduce3 --> CheckEarly
     
-    AddTransport --> ActivityCalc[Calcul Activités]
-    ActivityCalc --> Decision1{ProgramTemplate validé?}
-    Decision1 -->|Oui| ActivityLoop[Pour chaque ProgramTemplateActivity]
-    ActivityLoop --> GetActivityPrice[Récupérer Activity.price]
-    GetActivityPrice --> CalcActivity[Calculer: price × participants]
-    CalcActivity --> AddActivity[Ajouter à total_amount]
-    AddActivity --> LodgingCalc
-    Decision1 -->|Non| LodgingCalc[Calcul Hébergement]
-    
-    AddActivity --> LodgingCalc
-    LodgingCalc --> Decision2{lodging_price_per_person renseigné?}
-    Decision2 -->|Oui| CalcLodging[Calculer: lodging_price × participants × jours]
-    CalcLodging --> AddLodging[Ajouter à total_amount]
-    AddLodging --> Reductions
-    Decision2 -->|Non| Reductions[Application Réductions]
-    
-    Reductions --> Decision3{participants ≥ 30?}
-    Decision3 -->|Oui| Reduce10[total_amount × 0.90 10% réduction]
-    Decision3 -->|Non| Decision4{participants ≥ 20?}
-    Decision4 -->|Oui| Reduce5[total_amount × 0.95 5% réduction]
-    Decision4 -->|Non| Decision5{participants ≥ 10?}
-    Decision5 -->|Oui| Reduce3[total_amount × 0.97 3% réduction]
-    Decision5 -->|Non| EarlyBird
-    
-    Reduce10 --> EarlyBird
-    Reduce5 --> EarlyBird
-    Reduce3 --> EarlyBird
-    
-    EarlyBird --> Decision6{Réservation > 3 mois?}
-    Decision6 -->|Oui| EarlyBird5[total_amount × 0.95 5% early bird]
-    EarlyBird5 --> Margin
-    Decision6 -->|Non| Margin[Application Marge]
-    
-    Margin --> Decision7{margin_percent renseigné?}
-    Decision7 -->|Oui| ApplyMargin[total_amount × 1 + margin_percent/100]
-    ApplyMargin --> CreateQuote
-    Decision7 -->|Non| CreateQuote[Créer Quote avec total_amount]
-    
-    CreateQuote --> CreateLines[Créer QuoteLines détaillées]
-    CreateLines --> End([End])
+    CheckEarly{Réservation > 3 mois?}
+    CheckEarly -->|Oui| EarlyBird[total_amount × 0.95<br/>5% early bird]
+    CheckEarly -->|Non| End([Fin])
+    EarlyBird --> End
+```
+
+#### 3.5 Application Marge
+
+```mermaid
+flowchart TD
+    Start([Start]) --> Check{margin_percent renseigné?}
+    Check -->|Non| End([Fin])
+    Check -->|Oui| Apply[total_amount × 1 + margin_percent/100]
+    Apply --> End
 ```
 
 ## 4. Validation Dossier → Facture
