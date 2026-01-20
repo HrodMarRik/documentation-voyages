@@ -88,6 +88,73 @@ CREATE TABLE two_factor_auth (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
+-- ÉTABLISSEMENTS SCOLAIRES
+-- ============================================
+
+CREATE TABLE schools (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    school_type ENUM('primary', 'middle', 'high', 'college', 'other') DEFAULT 'other',
+    address VARCHAR(255),
+    city VARCHAR(100),
+    postal_code VARCHAR(20),
+    country VARCHAR(100) DEFAULT 'France',
+    phone VARCHAR(50),
+    website VARCHAR(255),
+    -- Mailing avancé
+    email_primary VARCHAR(255),
+    email_secondary VARCHAR(255),
+    email_marketing_consent BOOLEAN NOT NULL DEFAULT FALSE,
+    email_consent_date TIMESTAMP NULL,
+    email_opt_in_date TIMESTAMP NULL,
+    email_opt_out_date TIMESTAMP NULL,
+    email_preferences JSON,
+    email_bounce_count INT NOT NULL DEFAULT 0,
+    email_last_sent TIMESTAMP NULL,
+    -- WhatsApp avancé
+    whatsapp_phone_primary VARCHAR(50),
+    whatsapp_phone_secondary VARCHAR(50),
+    whatsapp_consent BOOLEAN NOT NULL DEFAULT FALSE,
+    whatsapp_consent_date TIMESTAMP NULL,
+    whatsapp_opt_in_date TIMESTAMP NULL,
+    whatsapp_opt_out_date TIMESTAMP NULL,
+    whatsapp_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    whatsapp_verification_date TIMESTAMP NULL,
+    whatsapp_template_preferences JSON,
+    whatsapp_last_contact TIMESTAMP NULL,
+    -- Intégration Odoo
+    odoo_partner_id INT,
+    odoo_contact_id INT,
+    -- Métadonnées
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_schools_email_primary (email_primary),
+    INDEX idx_schools_whatsapp_phone_primary (whatsapp_phone_primary),
+    INDEX idx_schools_email_marketing_consent (email_marketing_consent),
+    INDEX idx_schools_whatsapp_consent (whatsapp_consent),
+    INDEX idx_schools_email_opt_out (email_opt_out_date),
+    INDEX idx_schools_whatsapp_opt_out (whatsapp_opt_out_date),
+    INDEX idx_schools_city (city),
+    INDEX idx_schools_is_active (is_active),
+    INDEX idx_schools_odoo_partner_id (odoo_partner_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE school_contact_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id INT NOT NULL,
+    contact_type ENUM('email', 'whatsapp') NOT NULL,
+    action ENUM('opt_in', 'opt_out', 'consent_given', 'consent_withdrawn', 'message_sent', 'bounce', 'verification') NOT NULL,
+    details JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE,
+    INDEX idx_school_contact_history_school_id (school_id),
+    INDEX idx_school_contact_history_contact_type (contact_type),
+    INDEX idx_school_contact_history_created_at (created_at),
+    INDEX idx_school_contact_history_school_type (school_id, contact_type, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
 -- PROFESSEURS & VOYAGES
 -- ============================================
 
@@ -96,16 +163,15 @@ CREATE TABLE teachers (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     phone VARCHAR(50),
-    school VARCHAR(255),
-    school_address VARCHAR(255),
-    school_city VARCHAR(100),
-    school_postal_code VARCHAR(20),
+    school_id INT,
     odoo_partner_id INT,
     odoo_contact_id INT,
     form_data JSON,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE SET NULL,
     INDEX idx_teachers_email (email),
+    INDEX idx_teachers_school_id (school_id),
     INDEX idx_teachers_odoo_partner_id (odoo_partner_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -350,6 +416,7 @@ CREATE TABLE invoice_lines (
 CREATE TABLE bookings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     travel_id INT NOT NULL,
+    school_id INT,
     participant_name VARCHAR(255) NOT NULL,
     age INT,
     email VARCHAR(255),
@@ -362,7 +429,9 @@ CREATE TABLE bookings (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (travel_id) REFERENCES travels(id) ON DELETE CASCADE,
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE SET NULL,
     INDEX idx_bookings_travel_id (travel_id),
+    INDEX idx_bookings_school_id (school_id),
     INDEX idx_bookings_status (status),
     INDEX idx_bookings_payment_status (payment_status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -439,3 +508,36 @@ CREATE TABLE linguistic_travel_registrations (
     INDEX idx_linguistic_travel_registrations_guest_id (guest_id),
     INDEX idx_linguistic_travel_registrations_linguistic_travel_id (linguistic_travel_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- MIGRATION DES DONNÉES EXISTANTES
+-- ============================================
+
+-- Migration des établissements depuis teachers vers schools
+-- Ce script crée des écoles à partir des champs texte de teachers
+-- et met à jour les références
+
+-- Étape 1 : Créer les écoles à partir des données teachers
+INSERT INTO schools (name, city, postal_code, address, created_at)
+SELECT DISTINCT
+    t.school AS name,
+    t.school_city AS city,
+    t.school_postal_code AS postal_code,
+    t.school_address AS address,
+    MIN(t.created_at) AS created_at
+FROM teachers t
+WHERE t.school IS NOT NULL 
+  AND t.school != ''
+GROUP BY t.school, t.school_city, t.school_postal_code, t.school_address;
+
+-- Étape 2 : Mettre à jour teachers.school_id avec les nouveaux IDs
+UPDATE teachers t
+INNER JOIN schools s ON 
+    (t.school = s.name OR (t.school IS NULL AND s.name IS NULL))
+    AND (t.school_city = s.city OR (t.school_city IS NULL AND s.city IS NULL))
+    AND (t.school_postal_code = s.postal_code OR (t.school_postal_code IS NULL AND s.postal_code IS NULL))
+SET t.school_id = s.id
+WHERE t.school IS NOT NULL AND t.school != '';
+
+-- Note : Après migration, les colonnes school, school_address, school_city, school_postal_code
+-- peuvent être supprimées avec ALTER TABLE teachers DROP COLUMN school, etc.

@@ -17,6 +17,11 @@ erDiagram
     PERMISSION ||--o{ ROLE_PERMISSION : "a"
     USER ||--|| TWO_FACTOR_AUTH : "a"
     
+    %% Établissements Scolaires
+    SCHOOL ||--o{ TEACHER : "emploie"
+    SCHOOL ||--o{ BOOKING : "a"
+    SCHOOL ||--o{ SCHOOL_CONTACT_HISTORY : "a"
+    
     %% Professeurs & Voyages
     TEACHER ||--o{ TRAVEL : "crée"
     TRAVEL ||--o{ TRAVEL_STATUS_HISTORY : "a"
@@ -108,15 +113,57 @@ erDiagram
         TIMESTAMP created_at
     }
     
+    SCHOOL {
+        INTEGER id PK
+        VARCHAR name
+        ENUM school_type
+        VARCHAR address
+        VARCHAR city
+        VARCHAR postal_code
+        VARCHAR country
+        VARCHAR phone
+        VARCHAR website
+        VARCHAR email_primary
+        VARCHAR email_secondary
+        BOOLEAN email_marketing_consent
+        TIMESTAMP email_consent_date
+        TIMESTAMP email_opt_in_date
+        TIMESTAMP email_opt_out_date
+        JSON email_preferences
+        INTEGER email_bounce_count
+        TIMESTAMP email_last_sent
+        VARCHAR whatsapp_phone_primary
+        VARCHAR whatsapp_phone_secondary
+        BOOLEAN whatsapp_consent
+        TIMESTAMP whatsapp_consent_date
+        TIMESTAMP whatsapp_opt_in_date
+        TIMESTAMP whatsapp_opt_out_date
+        BOOLEAN whatsapp_verified
+        TIMESTAMP whatsapp_verification_date
+        JSON whatsapp_template_preferences
+        TIMESTAMP whatsapp_last_contact
+        INTEGER odoo_partner_id
+        INTEGER odoo_contact_id
+        BOOLEAN is_active
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    SCHOOL_CONTACT_HISTORY {
+        INTEGER id PK
+        INTEGER school_id FK
+        ENUM contact_type
+        ENUM action
+        JSON details
+        TIMESTAMP created_at
+    }
+    
     TEACHER {
         INTEGER id PK
         VARCHAR name
         VARCHAR email UK
         VARCHAR phone
-        VARCHAR school
-        VARCHAR school_address
-        VARCHAR school_city
-        VARCHAR school_postal_code
+        INTEGER school_id FK
         INTEGER odoo_partner_id
         INTEGER odoo_contact_id
         JSON form_data
@@ -297,6 +344,7 @@ erDiagram
     BOOKING {
         INTEGER id PK
         INTEGER travel_id FK
+        INTEGER school_id FK
         VARCHAR participant_name
         INTEGER age
         VARCHAR email
@@ -377,15 +425,16 @@ erDiagram
 ## Packages
 
 1. **Authentification & Autorisation** : Gestion des utilisateurs, rôles et permissions
-2. **Professeurs & Voyages** : Gestion des professeurs et des voyages scolaires
-3. **Destinations & Activités** : Catalogue des destinations et activités
-4. **Plannings** : Programmes préconstruits
-5. **Transport & Prix** : Tarification du transport
-6. **Devis** : Gestion des devis
-7. **Factures** : Gestion des factures (liées uniquement aux voyages)
-8. **Réservations & Contacts** : Réservations et contacts parents
-9. **Documents** : Documents liés aux voyages
-10. **Voyages Linguistiques** : Gestion des voyages linguistiques
+2. **Établissements Scolaires** : Gestion des établissements avec mailing et WhatsApp
+3. **Professeurs & Voyages** : Gestion des professeurs et des voyages scolaires
+4. **Destinations & Activités** : Catalogue des destinations et activités
+5. **Plannings** : Programmes préconstruits
+6. **Transport & Prix** : Tarification du transport
+7. **Devis** : Gestion des devis
+8. **Factures** : Gestion des factures (liées uniquement aux voyages)
+9. **Réservations & Contacts** : Réservations et contacts parents
+10. **Documents** : Documents liés aux voyages
+11. **Voyages Linguistiques** : Gestion des voyages linguistiques
 
 ---
 
