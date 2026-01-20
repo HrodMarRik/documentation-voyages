@@ -20,7 +20,8 @@ erDiagram
     %% Établissements Scolaires
     SCHOOL ||--o{ TEACHER : "emploie"
     SCHOOL ||--o{ BOOKING : "a"
-    SCHOOL ||--o{ SCHOOL_CONTACT_HISTORY : "a"
+    SCHOOL ||--o{ CONTACT : "a"
+    CONTACT ||--o{ CONTACT_HISTORY : "a"
     
     %% Professeurs & Voyages
     TEACHER ||--o{ TRAVEL : "crée"
@@ -123,6 +124,18 @@ erDiagram
         VARCHAR country
         VARCHAR phone
         VARCHAR website
+        INTEGER odoo_partner_id
+        INTEGER odoo_contact_id
+        BOOLEAN is_active
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    CONTACT {
+        INTEGER id PK
+        INTEGER school_id FK
+        VARCHAR contact_name
+        VARCHAR contact_role
         VARCHAR email_primary
         VARCHAR email_secondary
         BOOLEAN email_marketing_consent
@@ -145,13 +158,14 @@ erDiagram
         INTEGER odoo_partner_id
         INTEGER odoo_contact_id
         BOOLEAN is_active
+        BOOLEAN is_primary
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
     
-    SCHOOL_CONTACT_HISTORY {
+    CONTACT_HISTORY {
         INTEGER id PK
-        INTEGER school_id FK
+        INTEGER contact_id FK
         ENUM contact_type
         ENUM action
         JSON details

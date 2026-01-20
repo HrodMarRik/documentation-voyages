@@ -12,6 +12,18 @@ classDiagram
         +String country
         +String phone
         +String website
+        +Integer odoo_partner_id
+        +Integer odoo_contact_id
+        +Boolean is_active
+        +DateTime created_at
+        +DateTime updated_at
+    }
+    
+    class Contact {
+        +Integer id
+        +Integer school_id
+        +String contact_name
+        +String contact_role
         +String email_primary
         +String email_secondary
         +Boolean email_marketing_consent
@@ -34,13 +46,14 @@ classDiagram
         +Integer odoo_partner_id
         +Integer odoo_contact_id
         +Boolean is_active
+        +Boolean is_primary
         +DateTime created_at
         +DateTime updated_at
     }
     
-    class SchoolContactHistory {
+    class ContactHistory {
         +Integer id
-        +Integer school_id
+        +Integer contact_id
         +ContactType contact_type
         +Action action
         +JSON details
@@ -168,13 +181,14 @@ classDiagram
     
     School "1" *-- "*" Teacher
     School "1" *-- "*" Booking
-    School "1" *-- "*" SchoolContactHistory
+    School "1" *-- "*" Contact
+    Contact "1" *-- "*" ContactHistory
     Teacher "1" *-- "*" Travel
     Travel "1" *-- "*" TravelStatusHistory
     Travel "1" *-- "*" Booking
     School --> SchoolType
-    SchoolContactHistory --> ContactType
-    SchoolContactHistory --> Action
+    ContactHistory --> ContactType
+    ContactHistory --> Action
     Travel --> TravelType
     Travel --> TravelStatus
     TravelStatusHistory --> TravelStatus

@@ -38,20 +38,25 @@ CREATE INDEX idx_transport_prices_date ON transport_prices(date);
 
 ```sql
 -- Index pour établissements scolaires
-CREATE INDEX idx_schools_email_primary ON schools(email_primary);
-CREATE INDEX idx_schools_whatsapp_phone_primary ON schools(whatsapp_phone_primary);
-CREATE INDEX idx_schools_email_marketing_consent ON schools(email_marketing_consent);
-CREATE INDEX idx_schools_whatsapp_consent ON schools(whatsapp_consent);
-CREATE INDEX idx_schools_email_opt_out ON schools(email_opt_out_date);
-CREATE INDEX idx_schools_whatsapp_opt_out ON schools(whatsapp_opt_out_date);
 CREATE INDEX idx_schools_city ON schools(city);
 CREATE INDEX idx_schools_is_active ON schools(is_active);
 
+-- Index pour contacts (mailing et WhatsApp)
+CREATE INDEX idx_contacts_school_id ON contacts(school_id);
+CREATE INDEX idx_contacts_email_primary ON contacts(email_primary);
+CREATE INDEX idx_contacts_whatsapp_phone_primary ON contacts(whatsapp_phone_primary);
+CREATE INDEX idx_contacts_email_marketing_consent ON contacts(email_marketing_consent);
+CREATE INDEX idx_contacts_whatsapp_consent ON contacts(whatsapp_consent);
+CREATE INDEX idx_contacts_email_opt_out ON contacts(email_opt_out_date);
+CREATE INDEX idx_contacts_whatsapp_opt_out ON contacts(whatsapp_opt_out_date);
+CREATE INDEX idx_contacts_is_active ON contacts(is_active);
+CREATE INDEX idx_contacts_is_primary ON contacts(is_primary);
+
 -- Index pour historique des contacts
-CREATE INDEX idx_school_contact_history_school_id ON school_contact_history(school_id);
-CREATE INDEX idx_school_contact_history_contact_type ON school_contact_history(contact_type);
-CREATE INDEX idx_school_contact_history_created_at ON school_contact_history(created_at);
-CREATE INDEX idx_school_contact_history_school_type ON school_contact_history(school_id, contact_type, created_at);
+CREATE INDEX idx_contact_history_contact_id ON contact_history(contact_id);
+CREATE INDEX idx_contact_history_contact_type ON contact_history(contact_type);
+CREATE INDEX idx_contact_history_created_at ON contact_history(created_at);
+CREATE INDEX idx_contact_history_contact_type_date ON contact_history(contact_id, contact_type, created_at);
 ```
 
 ### Index Composites
@@ -189,103 +194,129 @@ JOIN teachers te ON t.teacher_id = te.id;
 
 ## Requêtes de Prospection
 
-### Mailing - Établissements avec Consentement
+### Mailing - Contacts avec Consentement
 
 ```sql
--- Établissements actifs avec consentement email et pas d'opt-out
-SELECT s.*, COUNT(t.id) as teacher_count
-FROM schools s
+-- Contacts actifs avec consentement email et pas d'opt-out, liés à des écoles
+SELECT 
+    c.*,
+    s.name as school_name,
+    s.city as school_city,
+    COUNT(t.id) as teacher_count
+FROM contacts c
+INNER JOIN schools s ON s.id = c.school_id
 LEFT JOIN teachers t ON t.school_id = s.id
-WHERE s.is_active = TRUE
-  AND s.email_marketing_consent = TRUE
-  AND s.email_opt_out_date IS NULL
-  AND s.email_primary IS NOT NULL
-  AND s.email_primary != ''
-GROUP BY s.id
+WHERE c.is_active = TRUE
+  AND s.is_active = TRUE
+  AND c.email_marketing_consent = TRUE
+  AND c.email_opt_out_date IS NULL
+  AND c.email_primary IS NOT NULL
+  AND c.email_primary != ''
+GROUP BY c.id, s.name, s.city
 ORDER BY teacher_count DESC;
 
--- Établissements par ville avec consentement
-SELECT s.city, COUNT(*) as school_count
-FROM schools s
-WHERE s.is_active = TRUE
-  AND s.email_marketing_consent = TRUE
-  AND s.email_opt_out_date IS NULL
+-- Contacts par ville avec consentement
+SELECT s.city, COUNT(DISTINCT c.id) as contact_count
+FROM contacts c
+INNER JOIN schools s ON s.id = c.school_id
+WHERE c.is_active = TRUE
+  AND s.is_active = TRUE
+  AND c.email_marketing_consent = TRUE
+  AND c.email_opt_out_date IS NULL
 GROUP BY s.city
-ORDER BY school_count DESC;
+ORDER BY contact_count DESC;
 ```
 
-### WhatsApp - Établissements avec Consentement
+### WhatsApp - Contacts avec Consentement
 
 ```sql
--- Établissements actifs avec consentement WhatsApp et vérifiés
-SELECT s.*, COUNT(t.id) as teacher_count
-FROM schools s
+-- Contacts actifs avec consentement WhatsApp et vérifiés, liés à des écoles
+SELECT 
+    c.*,
+    s.name as school_name,
+    s.city as school_city,
+    COUNT(t.id) as teacher_count
+FROM contacts c
+INNER JOIN schools s ON s.id = c.school_id
 LEFT JOIN teachers t ON t.school_id = s.id
-WHERE s.is_active = TRUE
-  AND s.whatsapp_consent = TRUE
-  AND s.whatsapp_verified = TRUE
-  AND s.whatsapp_opt_out_date IS NULL
-  AND s.whatsapp_phone_primary IS NOT NULL
-  AND s.whatsapp_phone_primary != ''
-GROUP BY s.id
+WHERE c.is_active = TRUE
+  AND s.is_active = TRUE
+  AND c.whatsapp_consent = TRUE
+  AND c.whatsapp_verified = TRUE
+  AND c.whatsapp_opt_out_date IS NULL
+  AND c.whatsapp_phone_primary IS NOT NULL
+  AND c.whatsapp_phone_primary != ''
+GROUP BY c.id, s.name, s.city
 ORDER BY teacher_count DESC;
 
--- Établissements avec numéro WhatsApp mais non vérifiés
-SELECT s.id, s.name, s.whatsapp_phone_primary, s.city
-FROM schools s
-WHERE s.is_active = TRUE
-  AND s.whatsapp_phone_primary IS NOT NULL
-  AND s.whatsapp_phone_primary != ''
-  AND s.whatsapp_verified = FALSE
-ORDER BY s.created_at DESC;
+-- Contacts avec numéro WhatsApp mais non vérifiés
+SELECT 
+    c.id,
+    c.contact_name,
+    c.whatsapp_phone_primary,
+    s.name as school_name,
+    s.city
+FROM contacts c
+INNER JOIN schools s ON s.id = c.school_id
+WHERE c.is_active = TRUE
+  AND s.is_active = TRUE
+  AND c.whatsapp_phone_primary IS NOT NULL
+  AND c.whatsapp_phone_primary != ''
+  AND c.whatsapp_verified = FALSE
+ORDER BY c.created_at DESC;
 ```
 
 ### Statistiques de Prospection
 
 ```sql
--- Statistiques globales de prospection
+-- Statistiques globales de prospection (par contacts)
 SELECT 
-    COUNT(*) as total_schools,
-    SUM(CASE WHEN email_marketing_consent = TRUE AND email_opt_out_date IS NULL THEN 1 ELSE 0 END) as email_consent_count,
-    SUM(CASE WHEN whatsapp_consent = TRUE AND whatsapp_opt_out_date IS NULL THEN 1 ELSE 0 END) as whatsapp_consent_count,
-    SUM(CASE WHEN whatsapp_verified = TRUE THEN 1 ELSE 0 END) as whatsapp_verified_count,
-    SUM(CASE WHEN email_bounce_count > 0 THEN 1 ELSE 0 END) as email_bounce_count
-FROM schools
-WHERE is_active = TRUE;
+    COUNT(DISTINCT s.id) as total_schools,
+    COUNT(DISTINCT c.id) as total_contacts,
+    SUM(CASE WHEN c.email_marketing_consent = TRUE AND c.email_opt_out_date IS NULL THEN 1 ELSE 0 END) as email_consent_count,
+    SUM(CASE WHEN c.whatsapp_consent = TRUE AND c.whatsapp_opt_out_date IS NULL THEN 1 ELSE 0 END) as whatsapp_consent_count,
+    SUM(CASE WHEN c.whatsapp_verified = TRUE THEN 1 ELSE 0 END) as whatsapp_verified_count,
+    SUM(CASE WHEN c.email_bounce_count > 0 THEN 1 ELSE 0 END) as email_bounce_count
+FROM schools s
+LEFT JOIN contacts c ON c.school_id = s.id
+WHERE s.is_active = TRUE
+  AND (c.is_active = TRUE OR c.id IS NULL);
 
 -- Historique des actions de contact par type
 SELECT 
-    contact_type,
-    action,
+    ch.contact_type,
+    ch.action,
     COUNT(*) as action_count,
-    DATE(created_at) as action_date
-FROM school_contact_history
-WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-GROUP BY contact_type, action, DATE(created_at)
-ORDER BY action_date DESC, contact_type, action;
+    DATE(ch.created_at) as action_date
+FROM contact_history ch
+INNER JOIN contacts c ON c.id = ch.contact_id
+WHERE ch.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+GROUP BY ch.contact_type, ch.action, DATE(ch.created_at)
+ORDER BY action_date DESC, ch.contact_type, ch.action;
 ```
 
 ### Requêtes Optimisées avec Jointures
 
 ```sql
--- Établissements avec leurs professeurs et voyages
+-- Établissements avec leurs contacts, professeurs et voyages
 SELECT 
     s.id as school_id,
     s.name as school_name,
     s.city,
-    s.email_primary,
-    s.whatsapp_phone_primary,
+    c.contact_name,
+    c.email_primary,
+    c.whatsapp_phone_primary,
     COUNT(DISTINCT t.id) as teacher_count,
     COUNT(DISTINCT tr.id) as travel_count,
     COUNT(DISTINCT b.id) as booking_count
 FROM schools s
+LEFT JOIN contacts c ON c.school_id = s.id AND c.is_active = TRUE AND c.is_primary = TRUE
 LEFT JOIN teachers t ON t.school_id = s.id
 LEFT JOIN travels tr ON tr.teacher_id = t.id
 LEFT JOIN bookings b ON b.school_id = s.id
 WHERE s.is_active = TRUE
-  AND s.email_marketing_consent = TRUE
-  AND s.email_opt_out_date IS NULL
-GROUP BY s.id, s.name, s.city, s.email_primary, s.whatsapp_phone_primary
+  AND (c.email_marketing_consent = TRUE AND c.email_opt_out_date IS NULL OR c.id IS NULL)
+GROUP BY s.id, s.name, s.city, c.contact_name, c.email_primary, c.whatsapp_phone_primary
 HAVING teacher_count > 0
 ORDER BY teacher_count DESC, travel_count DESC;
 ```
@@ -301,7 +332,8 @@ ANALYZE TABLE travels;
 ANALYZE TABLE invoices;
 ANALYZE TABLE quotes;
 ANALYZE TABLE schools;
-ANALYZE TABLE school_contact_history;
+ANALYZE TABLE contacts;
+ANALYZE TABLE contact_history;
 ```
 
 ### OPTIMIZE TABLE
@@ -311,7 +343,8 @@ Optimiser les tables après suppressions importantes :
 ```sql
 OPTIMIZE TABLE travels;
 OPTIMIZE TABLE schools;
-OPTIMIZE TABLE school_contact_history;
+OPTIMIZE TABLE contacts;
+OPTIMIZE TABLE contact_history;
 ```
 
 ### Vérification des Index

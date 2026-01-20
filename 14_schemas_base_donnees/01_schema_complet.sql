@@ -101,6 +101,23 @@ CREATE TABLE schools (
     country VARCHAR(100) DEFAULT 'France',
     phone VARCHAR(50),
     website VARCHAR(255),
+    -- Intégration Odoo
+    odoo_partner_id INT,
+    odoo_contact_id INT,
+    -- Métadonnées
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_schools_city (city),
+    INDEX idx_schools_is_active (is_active),
+    INDEX idx_schools_odoo_partner_id (odoo_partner_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE contacts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id INT,
+    contact_name VARCHAR(255),
+    contact_role VARCHAR(100),
     -- Mailing avancé
     email_primary VARCHAR(255),
     email_secondary VARCHAR(255),
@@ -127,31 +144,34 @@ CREATE TABLE schools (
     odoo_contact_id INT,
     -- Métadonnées
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    is_primary BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_schools_email_primary (email_primary),
-    INDEX idx_schools_whatsapp_phone_primary (whatsapp_phone_primary),
-    INDEX idx_schools_email_marketing_consent (email_marketing_consent),
-    INDEX idx_schools_whatsapp_consent (whatsapp_consent),
-    INDEX idx_schools_email_opt_out (email_opt_out_date),
-    INDEX idx_schools_whatsapp_opt_out (whatsapp_opt_out_date),
-    INDEX idx_schools_city (city),
-    INDEX idx_schools_is_active (is_active),
-    INDEX idx_schools_odoo_partner_id (odoo_partner_id)
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE SET NULL,
+    INDEX idx_contacts_school_id (school_id),
+    INDEX idx_contacts_email_primary (email_primary),
+    INDEX idx_contacts_whatsapp_phone_primary (whatsapp_phone_primary),
+    INDEX idx_contacts_email_marketing_consent (email_marketing_consent),
+    INDEX idx_contacts_whatsapp_consent (whatsapp_consent),
+    INDEX idx_contacts_email_opt_out (email_opt_out_date),
+    INDEX idx_contacts_whatsapp_opt_out (whatsapp_opt_out_date),
+    INDEX idx_contacts_is_active (is_active),
+    INDEX idx_contacts_is_primary (is_primary),
+    INDEX idx_contacts_odoo_partner_id (odoo_partner_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE school_contact_history (
+CREATE TABLE contact_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    school_id INT NOT NULL,
+    contact_id INT NOT NULL,
     contact_type ENUM('email', 'whatsapp') NOT NULL,
     action ENUM('opt_in', 'opt_out', 'consent_given', 'consent_withdrawn', 'message_sent', 'bounce', 'verification') NOT NULL,
     details JSON,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE,
-    INDEX idx_school_contact_history_school_id (school_id),
-    INDEX idx_school_contact_history_contact_type (contact_type),
-    INDEX idx_school_contact_history_created_at (created_at),
-    INDEX idx_school_contact_history_school_type (school_id, contact_type, created_at)
+    FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE,
+    INDEX idx_contact_history_contact_id (contact_id),
+    INDEX idx_contact_history_contact_type (contact_type),
+    INDEX idx_contact_history_created_at (created_at),
+    INDEX idx_contact_history_contact_type_date (contact_id, contact_type, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -541,3 +561,6 @@ WHERE t.school IS NOT NULL AND t.school != '';
 
 -- Note : Après migration, les colonnes school, school_address, school_city, school_postal_code
 -- peuvent être supprimées avec ALTER TABLE teachers DROP COLUMN school, etc.
+
+-- Note : Les contacts de mailing et WhatsApp doivent être créés séparément dans la table contacts
+-- et liés aux écoles via contacts.school_id
