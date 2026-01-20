@@ -102,7 +102,7 @@ erDiagram
     
     TWO_FACTOR_AUTH {
         INTEGER id PK
-        INTEGER user_id FK UK
+        INTEGER user_id FK
         VARCHAR secret
         BOOLEAN is_enabled
         TIMESTAMP created_at
@@ -369,6 +369,10 @@ erDiagram
 - **FK** : Foreign Key (Clé Étrangère)
 - **UK** : Unique Key (Clé Unique)
 - **\*** : Attribut obligatoire
+
+## Notes sur les Contraintes
+
+- `TWO_FACTOR_AUTH.user_id` : Clé étrangère vers `USER.id` et contrainte unique (un utilisateur ne peut avoir qu'un seul enregistrement 2FA)
 
 ## Packages
 
