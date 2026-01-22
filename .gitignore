@@ -25,3 +25,4 @@ env/
 # Node (if any)
 node_modules/
 npm-debug.log*
+_a_venir/
