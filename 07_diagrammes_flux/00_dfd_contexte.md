@@ -57,8 +57,3 @@ flowchart TB
 3. **Odoo ERP** : Système ERP externe pour la gestion intégrée
 4. **Stripe** : Plateforme de paiement en ligne
 5. **SMTP Server** : Serveur email pour l'envoi de notifications
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

@@ -70,8 +70,3 @@ graph TB
 - Modèles SQLAlchemy
 - Relations ORM
 - Validations
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

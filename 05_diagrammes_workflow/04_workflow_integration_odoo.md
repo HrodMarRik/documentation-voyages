@@ -70,8 +70,3 @@ flowchart TD
     
     Resolved --> End([End])
 ```
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

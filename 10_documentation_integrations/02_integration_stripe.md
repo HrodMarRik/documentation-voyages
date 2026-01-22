@@ -227,8 +227,3 @@ Toutes les interactions avec Stripe sont loggées :
 - Création de PaymentIntent
 - Webhooks reçus
 - Erreurs
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

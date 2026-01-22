@@ -216,8 +216,3 @@
 - **Versioning API** : Support de plusieurs versions d'API
 - **Migration** : Scripts de migration pour mises à jour
 - **Rétrocompatibilité** : Maintien de la compatibilité quand possible
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

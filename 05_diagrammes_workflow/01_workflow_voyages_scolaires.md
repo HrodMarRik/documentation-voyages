@@ -54,8 +54,3 @@ flowchart TD
     Cancel --> Status6[Travel status → CANCELLED]
     Status6 --> End
 ```
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

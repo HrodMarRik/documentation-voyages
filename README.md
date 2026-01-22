@@ -75,12 +75,11 @@ Cette documentation présente un système intégré de gestion de voyages avec i
 ### 14_schemas_base_donnees/
 - Schéma SQL complet MySQL
 - Index et optimisations
-- Migrations Alembic
-- Backup et restore
+- Fonctions SQL stockées
 
 ### 15_glossaire_et_references/
-- Glossaire complet (200+ termes)
-- Acronymes, références techniques, bibliographie
+- Glossaire des termes techniques
+- Acronymes
 
 ## Technologies Utilisées
 
@@ -118,6 +117,3 @@ Cette documentation est générée à partir des projets source :
 
 Pour mettre à jour la documentation, modifier les fichiers source et régénérer la documentation consolidée.
 
----
-
-**Dernière mise à jour** : 2025-01-20

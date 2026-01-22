@@ -1014,9 +1014,3 @@ Les index suivants sont créés pour optimiser les requêtes fréquentes :
 - **TIMESTAMP** : Date et heure
 - **DATE** : Date uniquement
 - **DATETIME** : Date et heure (plus flexible que TIMESTAMP)
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20  
-**Base de données** : MySQL 8.0+

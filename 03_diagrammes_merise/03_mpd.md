@@ -447,10 +447,3 @@ mysql gestion_db < backup.sql
 1. **Compatibilité** : Maintenir la compatibilité ascendante quand possible
 2. **Dépréciation** : Marquer les fonctions obsolètes avant suppression
 3. **Migration** : Fournir des scripts de migration pour les changements majeurs
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20  
-**Base de données** : MySQL 8.0+  
-**Moteur** : InnoDB

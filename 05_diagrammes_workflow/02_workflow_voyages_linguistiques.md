@@ -53,8 +53,3 @@ flowchart TD
     Success --> Confirmed[Booking → CONFIRMED]
     Confirmed --> End3([End])
 ```
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

@@ -237,8 +237,3 @@ Après chaque synchronisation, vérifier dans Odoo :
 - Les contacts créés
 - Les factures générées
 - Les leads créés
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

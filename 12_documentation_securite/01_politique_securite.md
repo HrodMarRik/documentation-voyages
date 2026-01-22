@@ -162,8 +162,3 @@ Le système doit être disponible pour les utilisateurs autorisés quand ils en 
 - **Équipe technique** : Contact en cas d'incident technique
 - **Équipe sécurité** : Contact en cas d'incident de sécurité
 - **Support** : Contact support utilisateurs
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

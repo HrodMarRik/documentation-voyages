@@ -50,8 +50,3 @@ flowchart TD
     
     Overdue -->|Non| End2
 ```
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

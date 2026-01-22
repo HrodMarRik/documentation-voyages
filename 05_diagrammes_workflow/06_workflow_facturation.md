@@ -36,8 +36,3 @@ flowchart TD
     SendInvoice --> TravelStatus[Travel status → CONFIRMED]
     TravelStatus --> End([End])
 ```
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

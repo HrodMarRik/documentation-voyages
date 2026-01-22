@@ -50,8 +50,3 @@ graph TB
 - InnoDB Engine
 - utf8mb4 Charset
 - Réplication possible
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

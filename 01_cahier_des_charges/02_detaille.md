@@ -497,8 +497,3 @@ Voir le document dédié : [Exigences Non-Fonctionnelles](04_exigences_non_fonct
 - **Disponibilité** : SLA 99.5%
 - **Scalabilité** : Architecture horizontale
 - **Maintenabilité** : Code documenté, tests > 80%
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

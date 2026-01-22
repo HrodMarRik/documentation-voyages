@@ -1,19 +1,11 @@
 # Guide d'Installation
 
-## Prérequis Système
+## Prérequis
 
-### Système d'Exploitation
-
-- **Windows** : Windows 10/11 ou Windows Server 2019+
-- **Linux** : Ubuntu 20.04+, Debian 11+, CentOS 8+
-- **macOS** : macOS 11+
-
-### Logiciels Requis
-
-- **Python** : 3.9 ou supérieur
-- **Node.js** : 18.x ou supérieur
-- **MySQL** : 8.0 ou supérieur
-- **Git** : Pour cloner les dépôts
+- **Python** : 3.9+
+- **Node.js** : 18.x+
+- **MySQL** : 8.0+
+- **Git**
 
 ## Installation des Dépendances
 
@@ -36,14 +28,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Dépendances principales** :
-- FastAPI
-- SQLAlchemy
-- Alembic
-- PyMySQL (driver MySQL)
-- PyJWT (authentification)
-- pyotp (2FA)
-- python-dotenv (variables d'environnement)
+**Dépendances principales** : FastAPI, SQLAlchemy, Alembic, PyMySQL, PyJWT, pyotp, python-dotenv
 
 ### 2. Node.js et Dépendances Frontend
 
@@ -56,37 +41,26 @@ cd frontend
 npm install
 ```
 
-**Dépendances principales** :
-- Vue.js 3
-- Element Plus
-- Vite
-- Axios
-- Pinia
-- Vue Router
+**Dépendances principales** : Vue.js 3, Element Plus, Vite, Axios, Pinia, Vue Router
 
 ### 3. MySQL
 
-#### Installation MySQL
+#### Installation
 
-**Windows** :
-- Télécharger MySQL Installer depuis https://dev.mysql.com/downloads/installer/
-- Installer MySQL Server 8.0+
-- Noter le mot de passe root
+**Windows** : Télécharger MySQL Installer depuis https://dev.mysql.com/downloads/installer/
 
-**Linux (Ubuntu/Debian)** :
+**Linux** :
 ```bash
-sudo apt update
-sudo apt install mysql-server
+sudo apt update && sudo apt install mysql-server
 sudo mysql_secure_installation
 ```
 
 **macOS** :
 ```bash
-brew install mysql
-brew services start mysql
+brew install mysql && brew services start mysql
 ```
 
-#### Configuration MySQL
+#### Configuration
 
 ```sql
 -- Se connecter à MySQL
@@ -99,19 +73,6 @@ CREATE DATABASE gestion_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'gestion_user'@'localhost' IDENTIFIED BY 'votre_mot_de_passe';
 GRANT ALL PRIVILEGES ON gestion_db.* TO 'gestion_user'@'localhost';
 FLUSH PRIVILEGES;
-```
-
-#### Configuration my.cnf (Optionnel)
-
-Pour optimiser les performances, ajouter dans `/etc/mysql/my.cnf` :
-
-```ini
-[mysqld]
-character-set-server=utf8mb4
-collation-server=utf8mb4_unicode_ci
-default-storage-engine=InnoDB
-innodb_buffer_pool_size=1G
-max_connections=200
 ```
 
 ## Configuration de l'Application
@@ -167,12 +128,11 @@ COMPANY_ADDRESS=1 rue Exemple, 75000 Paris, France
 ### 2. Génération de la Clé Secrète
 
 ```python
-# Générer une clé secrète
 import secrets
 print(secrets.token_urlsafe(32))
 ```
 
-Copier le résultat dans `SECRET_KEY` du fichier `.env`.
+Copier le résultat dans `SECRET_KEY`.
 
 ### 3. Initialisation de la Base de Données
 
@@ -188,10 +148,6 @@ alembic upgrade head
 # Initialiser les données de base (rôles, permissions)
 python scripts/init_db.py
 ```
-
-## Installation des Modules Odoo
-
-Les modules Odoo standards (CRM, Facturation, Contacts) sont utilisés pour la synchronisation.
 
 ## Démarrage de l'Application
 
@@ -225,34 +181,19 @@ npm run preview
 
 Le frontend sera accessible sur : http://localhost:5173
 
-## Vérification de l'Installation
-
-### 1. Vérifier le Backend
+## Vérification
 
 ```bash
-# Test de santé
+# Backend
 curl http://localhost:8000/health
 
-# Devrait retourner: {"status":"ok"}
+# Base de données
+mysql -u gestion_user -p gestion_db -e "SHOW TABLES;"
+
+# Frontend : ouvrir http://localhost:5173
 ```
 
-### 2. Vérifier la Base de Données
-
-```bash
-# Se connecter à MySQL
-mysql -u gestion_user -p gestion_db
-
-# Vérifier les tables
-SHOW TABLES;
-
-# Devrait afficher toutes les tables créées
-```
-
-### 3. Vérifier le Frontend
-
-Ouvrir http://localhost:5173 dans un navigateur. La page de login devrait s'afficher.
-
-## Scripts d'Installation Automatisés
+## Scripts d'Installation
 
 ### Script Windows (install.ps1)
 
@@ -294,38 +235,8 @@ alembic upgrade head
 python scripts/init_db.py
 ```
 
-## Problèmes Courants
-
-### Erreur de Connexion MySQL
-
-- Vérifier que MySQL est démarré : `sudo systemctl status mysql`
-- Vérifier les identifiants dans `DATABASE_URL`
-- Vérifier que l'utilisateur a les permissions : `GRANT ALL PRIVILEGES ON gestion_db.* TO 'gestion_user'@'localhost';`
-
-### Erreur PyMySQL
-
-```bash
-pip install PyMySQL
-```
-
-### Erreur CORS
-
-Vérifier que `CORS_ORIGINS` dans `.env` contient l'URL du frontend.
-
-### Port déjà utilisé
-
-Changer le port dans la commande de démarrage :
-```bash
-uvicorn app.main:app --reload --port 8001
-```
-
 ## Prochaines Étapes
 
 1. **Configuration Odoo** : Voir [Guide Intégration Odoo](../10_documentation_integrations/01_integration_odoo.md)
 2. **Configuration Stripe** : Voir [Guide Intégration Stripe](../10_documentation_integrations/02_integration_stripe.md)
 3. **Premier Utilisateur** : Créer un utilisateur admin via l'API ou directement en base
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

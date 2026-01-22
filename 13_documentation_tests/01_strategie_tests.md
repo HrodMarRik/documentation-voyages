@@ -128,8 +128,3 @@ pytest tests/unit/test_pricing_service.py -v
 - **Révision régulière** : Vérifier que les tests restent pertinents
 - **Refactoring** : Adapter les tests lors du refactoring
 - **Documentation** : Maintenir la documentation des tests à jour
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

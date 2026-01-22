@@ -157,7 +157,6 @@ Booking créé (PENDING) → Paiement Stripe →
   Échec → CANCELLED + FAILED
 ```
 
-
 ## Règles de Synchronisation Odoo
 
 ### Quand Synchroniser
@@ -260,8 +259,3 @@ Booking créé (PENDING) → Paiement Stripe →
 ### Données Optionnelles vs Obligatoires
 
 Voir le MLD pour la liste complète des champs obligatoires (`NOT NULL`) et optionnels.
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

@@ -190,8 +190,3 @@ Le tableau de bord affiche :
 - **Recherche** : Utiliser la barre de recherche pour trouver rapidement
 - **Filtres** : Utiliser les filtres pour affiner les listes
 - **Export** : Exporter les données en CSV/Excel depuis les listes
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

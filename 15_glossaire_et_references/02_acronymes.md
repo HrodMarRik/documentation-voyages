@@ -117,8 +117,3 @@
 **XML** : eXtensible Markup Language
 
 **XML-RPC** : XML Remote Procedure Call
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

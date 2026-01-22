@@ -523,8 +523,3 @@ async def log_webhook(event_type: str, data: dict, status: str, error: str = Non
 1. Vérifier les logs de l'API
 2. Vérifier la table `webhook_logs`
 3. Vérifier que le service de traitement fonctionne
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-22

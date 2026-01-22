@@ -258,8 +258,3 @@
 4. Restauration depuis backup propre
 5. Remise en service
 6. Notification des utilisateurs si nécessaire
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20

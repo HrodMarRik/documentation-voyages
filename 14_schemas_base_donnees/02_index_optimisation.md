@@ -721,9 +721,3 @@ ALTER TABLE travels ADD INDEX idx_travels_status (status);
 -- Analyser une table pour optimiser les index
 ANALYZE TABLE travels;
 ```
-
----
-
-**Version** : 2.0  
-**Date** : 2025-01-20  
-**Mise à jour** : Ajout des index et optimisations pour les fonctions SQL

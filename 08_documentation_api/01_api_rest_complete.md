@@ -515,9 +515,3 @@ GET /api/travels?filter={"status":"draft","travel_type":"school"}
 ```
 GET /api/travels?sort=created_at&order=desc
 ```
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20  
-**Base URL** : `http://localhost:8000/api`

@@ -610,9 +610,3 @@ Les fonctions SQL stockées sont liées aux entités du modèle conceptuel de la
 3. **Réutilisabilité** : Les fonctions peuvent être utilisées dans plusieurs contextes
 4. **Maintenance** : Modifications de logique en un seul endroit
 5. **Traçabilité** : Les fonctions font partie intégrante du modèle de données
-
----
-
-**Version** : 2.0  
-**Date** : 2025-01-20  
-**Mise à jour** : Ajout des fonctions et procédures stockées

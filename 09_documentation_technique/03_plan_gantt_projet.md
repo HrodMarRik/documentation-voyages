@@ -540,9 +540,3 @@ mmdc -i documentation/09_documentation_technique/03_plan_gantt_projet.md -o gant
 - **Hebdomadaire** : État d'avancement, blocages, prochaines étapes
 - **Mensuel** : Vue d'ensemble, métriques, ajustements
 - **Fin de projet** : Rapport final, leçons apprises
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-22  
-**Dernière mise à jour** : 2025-01-22

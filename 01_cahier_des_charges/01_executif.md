@@ -7,7 +7,6 @@ Ce document présente un système intégré de gestion qui combine deux domaines
 1. **Gestion de Voyages** : Voyages scolaires et linguistiques, devis, factures
 2. **Intégration Odoo** : Synchronisation complète avec l'ERP Odoo (CRM, facturation, comptabilité)
 
-
 ## Objectifs Métier
 
 ### Objectifs Stratégiques
@@ -115,8 +114,6 @@ Ce document présente un système intégré de gestion qui combine deux domaines
 - **Audit trail** pour toutes les actions importantes
 - **Validation automatique** des données
 
-
-
 ## Architecture Générale
 
 ### Stack Technologique
@@ -140,16 +137,8 @@ Ce document présente un système intégré de gestion qui combine deux domaines
 4. **Données** : MySQL avec SQLAlchemy
 5. **Intégrations** : Odoo, Stripe, Email
 
-
-
 ## Conclusion
 
 Ce système intégré offre une solution complète pour la gestion de voyages (scolaires et linguistiques), avec une intégration native à Odoo. Il permet d'automatiser les processus répétitifs, de réduire les erreurs et d'améliorer significativement la productivité des équipes.
 
 La documentation complète dans ce dossier détaille tous les aspects techniques, fonctionnels et métier du système.
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20  
-**Auteur** : Équipe de développement

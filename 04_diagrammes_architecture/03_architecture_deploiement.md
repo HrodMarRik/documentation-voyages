@@ -63,8 +63,3 @@ graph TB
 **MySQL Slave** :
 - Read Replica
 - Backup Source
-
----
-
-**Version** : 1.0  
-**Date** : 2025-01-20
