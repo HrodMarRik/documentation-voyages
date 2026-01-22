@@ -1,0 +1,39 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' stateDiagram-v2
+'     [*] --> DRAFT: Création facture
+'     
+'     DRAFT --> VALIDATED: Validation commercial/comptable
+'     VALIDATED --> PAID: Paiement reçu
+'     VALIDATED --> CANCELLED: Annulation
+'     
+'     PAID --> [*]
+'     CANCELLED --> [*]
+'     DRAFT --> [*]: Suppression
+'     
+'     note right of DRAFT
+'         Facture en cours de création
+'         Modifiable
+'         Fonction: can_validate_invoice()
+'     end note
+'     
+'     note right of VALIDATED
+'         Facture validée
+'         Export Factur-X possible
+'         Synchronisation Odoo
+'         Fonction: get_invoice_total_ttc()
+'         Fonction: is_invoice_overdue()
+'         Fonction: days_until_invoice_due()
+'     end note
+'     
+'     note right of PAID
+'         Facture payée
+'         État final
+'         Fonction: is_invoice_paid()
+'     end note
+
+@enduml

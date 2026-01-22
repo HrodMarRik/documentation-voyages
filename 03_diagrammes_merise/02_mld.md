@@ -608,6 +608,385 @@ CREATE TABLE linguistic_travel_registrations (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
+## Fonctions SQL Stockées
+
+Le modèle logique inclut des fonctions SQL stockées et des procédures stockées qui encapsulent la logique métier. Ces fonctions sont organisées par domaine et sont associées aux tables correspondantes.
+
+### Fonctions par Table/Domaine
+
+#### Table `travels`
+
+**Fonctions de calcul de prix** :
+```sql
+-- Calcul du prix de transport
+calculate_transport_price(travel_id INT, participants INT) RETURNS DECIMAL(10,2)
+
+-- Calcul du prix des activités
+calculate_activities_price(travel_id INT, participants INT) RETURNS DECIMAL(10,2)
+
+-- Calcul du prix de l'hébergement
+calculate_lodging_price(travel_id INT, participants INT) RETURNS DECIMAL(10,2)
+
+-- Calcul du prix de base (transport + activités + hébergement)
+calculate_base_price(travel_id INT, participants INT) RETURNS DECIMAL(10,2)
+
+-- Calcul du prix final avec réductions et marge
+calculate_final_travel_price(travel_id INT) RETURNS DECIMAL(10,2)
+```
+
+**Fonctions de validation** :
+```sql
+-- Vérifie si un devis peut être généré
+can_generate_quote(travel_id INT) RETURNS BOOLEAN
+
+-- Vérifie si une facture peut être générée
+can_generate_invoice(travel_id INT) RETURNS BOOLEAN
+
+-- Vérifie si le voyage peut être confirmé
+is_travel_valid_for_confirmation(travel_id INT) RETURNS BOOLEAN
+```
+
+**Fonctions temporelles** :
+```sql
+-- Jours avant le départ
+days_until_departure(travel_id INT) RETURNS INT
+
+-- Durée du voyage en jours
+travel_duration_days(travel_id INT) RETURNS INT
+
+-- Durée du voyage en nuits
+travel_duration_nights(travel_id INT) RETURNS INT
+
+-- Vérifie si le voyage est terminé
+is_travel_in_past(travel_id INT) RETURNS BOOLEAN
+
+-- Vérifie si le voyage est en cours
+is_travel_in_progress(travel_id INT) RETURNS BOOLEAN
+
+-- Vérifie si le voyage est à venir
+is_travel_upcoming(travel_id INT) RETURNS BOOLEAN
+```
+
+**Fonctions de participants** :
+```sql
+-- Nombre actuel de participants
+get_travel_participant_count(travel_id INT) RETURNS INT
+
+-- Nombre de places disponibles
+get_available_spots(travel_id INT) RETURNS INT
+
+-- Vérifie si le voyage est complet
+is_travel_full(travel_id INT) RETURNS BOOLEAN
+
+-- Taux de remplissage
+get_participant_fill_rate(travel_id INT) RETURNS DECIMAL(5,2)
+```
+
+**Fonctions de contacts parents** :
+```sql
+-- Nombre de contacts parents collectés
+get_parent_contacts_count(travel_id INT) RETURNS INT
+
+-- Nombre attendu de contacts parents
+get_expected_parent_contacts_count(travel_id INT) RETURNS INT
+
+-- Vérifie si tous les contacts sont collectés
+are_all_parent_contacts_collected(travel_id INT) RETURNS BOOLEAN
+
+-- Nombre de contacts manquants
+get_missing_parent_contacts_count(travel_id INT) RETURNS INT
+```
+
+**Procédures** :
+```sql
+-- Met à jour le statut avec historique
+sp_update_travel_status(IN travel_id INT, IN new_status VARCHAR(50), IN user_id INT)
+
+-- Marque les contacts parents comme collectés
+sp_collect_parent_contacts(IN travel_id INT)
+
+-- Recalcule tous les totaux
+sp_update_travel_totals(IN travel_id INT)
+```
+
+#### Table `quotes`
+
+**Fonctions de validation** :
+```sql
+-- Vérifie si un devis peut être validé
+can_validate_quote(quote_id INT) RETURNS BOOLEAN
+
+-- Vérifie si un devis est expiré
+is_quote_expired(quote_id INT) RETURNS BOOLEAN
+
+-- Jours restants avant expiration
+days_until_quote_expiry(quote_id INT) RETURNS INT
+
+-- Retourne le statut actuel
+get_quote_status(quote_id INT) RETURNS VARCHAR(50)
+
+-- Vérifie si le devis peut être envoyé
+can_send_quote(quote_id INT) RETURNS BOOLEAN
+```
+
+**Fonctions de calcul** :
+```sql
+-- Total du devis (somme des lignes)
+get_quote_total(quote_id INT) RETURNS DECIMAL(10,2)
+
+-- Total pour un type de ligne
+calculate_quote_line_total(quote_id INT, line_type VARCHAR(50)) RETURNS DECIMAL(10,2)
+
+-- Montant de la réduction
+get_quote_discount_amount(quote_id INT) RETURNS DECIMAL(10,2)
+
+-- Montant final après réductions
+get_quote_final_amount(quote_id INT) RETURNS DECIMAL(10,2)
+```
+
+**Fonctions de génération** :
+```sql
+-- Génère un numéro de devis unique
+generate_quote_number() RETURNS VARCHAR(100)
+```
+
+**Procédures** :
+```sql
+-- Génère automatiquement un devis complet
+sp_generate_quote_for_travel(IN travel_id INT, OUT quote_id INT)
+```
+
+#### Table `invoices`
+
+**Fonctions de statut** :
+```sql
+-- Vérifie si une facture est payée
+is_invoice_paid(invoice_id INT) RETURNS BOOLEAN
+
+-- Vérifie si une facture est en retard
+is_invoice_overdue(invoice_id INT) RETURNS BOOLEAN
+
+-- Jours restants avant échéance
+days_until_invoice_due(invoice_id INT) RETURNS INT
+
+-- Vérifie si une facture peut être validée
+can_validate_invoice(invoice_id INT) RETURNS BOOLEAN
+```
+
+**Fonctions de calcul** :
+```sql
+-- Total HT
+get_invoice_total_ht(invoice_id INT) RETURNS DECIMAL(10,2)
+
+-- Total TTC
+get_invoice_total_ttc(invoice_id INT) RETURNS DECIMAL(10,2)
+
+-- Montant de TVA
+get_invoice_tax_amount(invoice_id INT) RETURNS DECIMAL(10,2)
+
+-- Total TTC (avec calcul)
+calculate_invoice_total_with_tax(invoice_id INT) RETURNS DECIMAL(10,2)
+```
+
+**Fonctions de génération** :
+```sql
+-- Génère un numéro de facture unique
+generate_invoice_number() RETURNS VARCHAR(100)
+```
+
+**Fonctions de relation** :
+```sql
+-- Retourne l'ID du devis source
+get_quote_for_invoice(invoice_id INT) RETURNS INT
+
+-- Vérifie si on peut créer une facture depuis un devis
+can_create_invoice_from_quote(quote_id INT) RETURNS BOOLEAN
+```
+
+**Procédures** :
+```sql
+-- Génère une facture depuis un devis validé
+sp_generate_invoice_from_quote(IN quote_id INT, OUT invoice_id INT)
+```
+
+#### Table `contacts`
+
+**Fonctions de consentement** :
+```sql
+-- Vérifie si on peut envoyer un email marketing
+can_send_marketing_email(contact_id INT) RETURNS BOOLEAN
+
+-- Vérifie si on peut envoyer un WhatsApp
+can_send_whatsapp(contact_id INT) RETURNS BOOLEAN
+
+-- Vérifie le consentement email
+has_email_consent(contact_id INT) RETURNS BOOLEAN
+
+-- Vérifie le consentement WhatsApp
+has_whatsapp_consent(contact_id INT) RETURNS BOOLEAN
+
+-- Vérifie si opt-out email
+is_contact_opted_out_email(contact_id INT) RETURNS BOOLEAN
+
+-- Vérifie si opt-out WhatsApp
+is_contact_opted_out_whatsapp(contact_id INT) RETURNS BOOLEAN
+```
+
+**Fonctions de statistiques** :
+```sql
+-- Taux de bounce
+get_email_bounce_rate(contact_id INT) RETURNS DECIMAL(5,2)
+
+-- Jours depuis dernier email
+days_since_last_email(contact_id INT) RETURNS INT
+
+-- Jours depuis dernier WhatsApp
+days_since_last_whatsapp(contact_id INT) RETURNS INT
+
+-- Score d'engagement
+get_contact_engagement_score(contact_id INT) RETURNS INT
+```
+
+#### Table `activities`
+
+**Fonctions de validation de planning** :
+```sql
+-- Vérifie si le planning a au moins une activité
+has_valid_planning(travel_id INT) RETURNS BOOLEAN
+
+-- Vérifie si des activités se chevauchent
+has_overlapping_activities(travel_id INT) RETURNS BOOLEAN
+
+-- Vérifie si le planning couvre tous les jours
+planning_covers_travel_days(travel_id INT) RETURNS BOOLEAN
+
+-- Validation complète du planning
+is_planning_valid(travel_id INT) RETURNS BOOLEAN
+```
+
+#### Table `bookings`
+
+**Fonctions de validation** :
+```sql
+-- Vérifie s'il reste des places
+has_available_spots(linguistic_travel_id INT) RETURNS BOOLEAN
+
+-- Vérifie si une réservation peut être créée
+can_create_booking(linguistic_travel_id INT) RETURNS BOOLEAN
+
+-- Vérifie si le paiement est en retard
+is_payment_overdue(booking_id INT) RETURNS BOOLEAN
+
+-- Détermine si la réservation doit être annulée
+should_cancel_booking(booking_id INT) RETURNS BOOLEAN
+```
+
+**Fonctions de génération** :
+```sql
+-- Génère un numéro de réservation
+generate_booking_number() RETURNS VARCHAR(100)
+```
+
+**Procédures** :
+```sql
+-- Annule les réservations en retard
+sp_cancel_overdue_bookings()
+```
+
+#### Table `transport_prices`
+
+Utilisée par les fonctions de calcul de prix :
+- `calculate_transport_price()` : Utilise cette table pour calculer le prix du transport
+
+#### Table `quote_lines`
+
+Utilisée par les fonctions de calcul de devis :
+- `get_quote_total()` : Somme toutes les lignes
+- `calculate_quote_line_total()` : Calcule le total par type de ligne
+
+#### Table `invoice_lines`
+
+Utilisée par les fonctions de calcul de factures :
+- `get_invoice_total_ht()` : Somme toutes les lignes HT
+- `calculate_invoice_total_with_tax()` : Calcule le total TTC
+
+### Exemples d'Utilisation dans les Requêtes
+
+#### Exemple 1 : Calcul du prix d'un voyage
+
+```sql
+-- Utiliser la fonction dans une requête SELECT
+SELECT 
+    id,
+    name,
+    calculate_final_travel_price(id) AS total_price
+FROM travels
+WHERE status = 'draft';
+```
+
+#### Exemple 2 : Validation avant génération de devis
+
+```sql
+-- Vérifier si on peut générer un devis
+SELECT 
+    id,
+    name,
+    can_generate_quote(id) AS can_generate
+FROM travels
+WHERE status = 'draft';
+```
+
+#### Exemple 3 : Utilisation dans un WHERE
+
+```sql
+-- Filtrer les voyages éligibles à la génération de devis
+SELECT *
+FROM travels
+WHERE can_generate_quote(id) = TRUE;
+```
+
+#### Exemple 4 : Appel de procédure stockée
+
+```sql
+-- Générer un devis automatiquement
+CALL sp_generate_quote_for_travel(123, @quote_id);
+SELECT @quote_id AS quote_id;
+```
+
+#### Exemple 5 : Calcul avec réductions
+
+```sql
+-- Calculer le prix avec toutes les réductions
+SELECT 
+    id,
+    name,
+    calculate_base_price(id, number_participants) AS base_price,
+    calculate_participant_discount(number_participants) AS discount_rate,
+    calculate_travel_price_with_discounts(id, number_participants) AS price_with_discounts
+FROM travels
+WHERE number_participants IS NOT NULL;
+```
+
+### Index Utilisés par les Fonctions
+
+Les fonctions SQL utilisent les index suivants pour optimiser leurs performances :
+
+- **`idx_travels_status`** : Utilisé par `can_generate_quote()`, `can_generate_invoice()`
+- **`idx_travels_dates`** : Utilisé par `days_until_departure()`, `is_travel_in_past()`, `is_early_bird()`
+- **`idx_travel_destinations_travel_id`** : Utilisé par `calculate_transport_price()`
+- **`idx_activities_travel_id`** : Utilisé par `calculate_activities_price()`, `has_valid_planning()`
+- **`idx_quotes_travel_id`** : Utilisé par `can_generate_invoice()`
+- **`idx_quote_lines_quote_id`** : Utilisé par `get_quote_total()`
+- **`idx_contacts_email_marketing_consent`** : Utilisé par `can_send_marketing_email()`
+- **`idx_contacts_whatsapp_consent`** : Utilisé par `can_send_whatsapp()`
+
+### Caractéristiques des Fonctions
+
+- **DETERMINISTIC** : Les fonctions de calcul sont déterministes (même résultat pour mêmes paramètres)
+- **NOT DETERMINISTIC** : Les fonctions de génération de numéros sont non déterministes
+- **READS SQL DATA** : Toutes les fonctions lisent des données (sauf les utilitaires)
+- **NO SQL** : Les fonctions utilitaires (formatage, dates) ne contiennent pas de SQL
+
 ## Contraintes d'Intégrité Référentielle
 
 Toutes les clés étrangères sont définies avec :

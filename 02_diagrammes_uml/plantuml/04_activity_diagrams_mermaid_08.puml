@@ -1,0 +1,11 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> Check{margin_percent renseigné?}
+'     Check -->|Non| End([Fin])
+'     Check -->|Oui| Apply[total_amount × 1 + margin_percent/100]
+'     Apply --> End
+
+@enduml

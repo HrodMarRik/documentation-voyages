@@ -1,0 +1,23 @@
+@startuml
+!theme plain
+
+actor Commercial
+participant "API Backend" as API
+participant "Service Planning" as Planning
+participant "Base de Données" as DB
+
+Commercial-->API: POST /api/program-templates/generate<br/>(travel_id)
+API-->DB: Récupérer Travel + Destinations
+DB--->API: Travel data
+API-->Planning: Générer planning préconstruit
+Planning-->DB: Récupérer activités par destination
+DB--->Planning: Liste activités
+Planning-->Planning: Calculer jours<br/>Distribuer activités
+Planning--->API: ProgramTemplate créé
+API-->DB: Sauvegarder ProgramTemplate
+DB--->API: Template sauvegardé
+API-->DB: Créer ProgramTemplateActivity<br/>(pour chaque activité)
+DB--->API: Activités liées
+API--->Commercial: 201 Created (program_template)
+
+@enduml

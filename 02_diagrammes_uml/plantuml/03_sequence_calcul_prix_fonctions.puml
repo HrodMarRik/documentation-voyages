@@ -1,0 +1,73 @@
+@startuml SequenceDiagram_CalculPrixFonctions
+!theme plain
+
+participant "Service Prix" as Service
+participant "Base de Données" as DB
+participant "Fonctions Base" as BaseFuncs
+participant "Fonctions Réductions" as DiscountFuncs
+participant "Fonctions Finales" as FinalFuncs
+
+Service -> DB : SELECT calculate_final_travel_price(:travel_id)
+activate DB
+
+DB -> BaseFuncs : calculate_transport_price()
+activate BaseFuncs
+BaseFuncs -> DB : SELECT transport_prices
+DB --> BaseFuncs : Prix transport
+BaseFuncs --> DB : Total transport
+deactivate BaseFuncs
+
+DB -> BaseFuncs : calculate_activities_price()
+activate BaseFuncs
+BaseFuncs -> DB : SELECT activities
+DB --> BaseFuncs : Prix activités
+BaseFuncs --> DB : Total activités
+deactivate BaseFuncs
+
+DB -> BaseFuncs : calculate_lodging_price()
+activate BaseFuncs
+BaseFuncs -> DB : SELECT travels.lodging_price_per_person
+DB --> BaseFuncs : Prix hébergement
+BaseFuncs --> DB : Total hébergement
+deactivate BaseFuncs
+
+DB -> BaseFuncs : calculate_base_price()
+activate BaseFuncs
+BaseFuncs -> BaseFuncs : Somme transport + activités + hébergement
+BaseFuncs --> DB : Prix de base
+deactivate BaseFuncs
+
+DB -> DiscountFuncs : calculate_participant_discount()
+activate DiscountFuncs
+DiscountFuncs --> DB : Réduction participants
+deactivate DiscountFuncs
+
+DB -> DiscountFuncs : is_early_bird()
+activate DiscountFuncs
+DiscountFuncs -> DB : SELECT start_date
+DB --> DiscountFuncs : Date départ
+DiscountFuncs --> DB : TRUE/FALSE
+deactivate DiscountFuncs
+
+DB -> DiscountFuncs : calculate_total_discount()
+activate DiscountFuncs
+DiscountFuncs -> DiscountFuncs : Combiner réductions
+DiscountFuncs --> DB : Réduction totale
+deactivate DiscountFuncs
+
+DB -> FinalFuncs : calculate_travel_price_with_discounts()
+activate FinalFuncs
+FinalFuncs -> FinalFuncs : Appliquer réductions
+FinalFuncs --> DB : Prix avec réductions
+deactivate FinalFuncs
+
+DB -> FinalFuncs : calculate_travel_price_with_margin()
+activate FinalFuncs
+FinalFuncs -> FinalFuncs : Appliquer marge
+FinalFuncs --> DB : Prix final
+deactivate FinalFuncs
+
+DB --> Service : Prix final calculé
+deactivate DB
+
+@enduml

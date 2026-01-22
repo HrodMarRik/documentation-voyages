@@ -1,0 +1,14 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' flowchart TD
+'     Start([Start]) --> Check{lodging_price_per_person renseigné?}
+'     Check -->|Non| End([Fin])
+'     Check -->|Oui| Calc[Calculer: lodging_price × participants × jours]
+'     Calc --> Add[Ajouter à total_amount]
+'     Add --> End
+
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+!theme plain
+
+class TravelService {
+    +create_travel(data)
+    +update_travel(travel_id, data)
+    +get_travel(travel_id)
+    +calculate_price(travel_id)
+    +validate_for_quote(travel_id)
+}
+class QuoteService {
+    +generate_quote(travel_id)
+    +validate_quote(quote_id)
+    +send_quote(quote_id)
+    +get_quote_total(quote_id)
+}
+class InvoiceService {
+    +generate_from_quote(quote_id)
+    +validate_invoice(invoice_id)
+    +export_facturx(invoice_id)
+}
+class PricingService {
+    +calculate_transport(travel_id, participants)
+    +calculate_activities(travel_id, participants)
+    +calculate_final_price(travel_id)
+    +apply_discounts(travel_id, participants)
+}
+class ContactService {
+    +check_email_consent(contact_id)
+    +check_whatsapp_consent(contact_id)
+    +send_marketing_email(contact_id)
+    +send_whatsapp(contact_id)
+}
+class SQLFunctions {
+    <<SQL Functions Layer>>
+    +PricingFunctions
+    +ValidationFunctions
+    +GenerationFunctions
+    +StatisticsFunctions
+}
+TravelService --> SQLFunctions : appelle
+QuoteService --> SQLFunctions : appelle
+InvoiceService --> SQLFunctions : appelle
+PricingService --> SQLFunctions : appelle
+ContactService --> SQLFunctions : appelle
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+!theme plain
+
+participant "Service Sync" as SyncService
+participant "Base de Données" as DB
+participant "Odoo API" as Odoo
+
+SyncService-->DB: Récupérer données à synchroniser
+DB--->SyncService: Invoices, Teachers, Guests
+SyncService-->Odoo: Créer/Mettre à jour entité
+Odoo--->SyncService: ID Odoo
+SyncService-->DB: Mettre à jour odoo_*_id
+DB--->SyncService: Mis à jour
+Odoo--->SyncService: Erreur
+SyncService-->DB: Logger erreur
+DB--->SyncService: Erreur loggée
+SyncService-->SyncService: Rapport de synchronisation
+
+@enduml

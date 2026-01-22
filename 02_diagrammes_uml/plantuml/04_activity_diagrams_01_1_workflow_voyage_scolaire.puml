@@ -1,0 +1,76 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' flowchart TD
+'     Start([Start]) --> FillForm[Professeur remplit formulaire public]
+'     FillForm --> CreateTravel[Créer Teacher + Travel DRAFT]
+'     CreateTravel --> Notify[Commercial reçoit notification]
+'     Notify --> GeneratePlanning[Commercial génère planning préconstruit]
+'     GeneratePlanning --> ModifyPlanning[Commercial modifie/valide planning]
+'     ModifyPlanning --> EnterTransport[Commercial saisit prix transport<br/>par destination/date]
+'     EnterTransport --> GenerateQuote[Commercial génère devis]
+'     
+'     GenerateQuote --> ValidateGen[Appel: can_generate_quote(travel_id)]
+'     ValidateGen --> DecisionGen{Devis générable?}
+'     DecisionGen -->|Non| ErrorGen[Erreur: conditions non remplies]
+'     ErrorGen --> End
+'     
+'     DecisionGen -->|Oui| CallProc[Appel: sp_generate_quote_for_travel()]
+'     CallProc --> CalcPrice[Calcul prix avec fonctions SQL:<br/>- calculate_transport_price()<br/>- calculate_activities_price()<br/>- calculate_lodging_price()<br/>- calculate_participant_discount()<br/>- is_early_bird()<br/>- calculate_final_travel_price()]
+'     
+'     CalcPrice --> GenNumber[Génération numéro:<br/>generate_quote_number()]
+'     GenNumber --> CreateQuote[Création Quote + QuoteLines]
+'     CreateQuote --> SendQuote[Commercial envoie devis au professeur]
+'     SendQuote --> Status1[Travel status → QUOTE_SENT]
+'     Status1 --> Decision1{Professeur accepte devis?}
+'     
+'     Decision1 -->|Oui| ValidateQuote[Commercial valide devis]
+'     ValidateQuote --> CheckValid[Appel: can_validate_quote(quote_id)]
+'     CheckValid --> DecisionValid{Devis validable?}
+'     DecisionValid -->|Non| ErrorValid[Erreur: devis expiré ou invalide]
+'     ErrorValid --> End
+'     DecisionValid -->|Oui| UpdateStatus[Appel: sp_update_travel_status()<br/>avec historique]
+'     UpdateStatus --> Status2[Travel status → QUOTE_VALIDATED]
+'     Status2 --> SendContacts[Professeur envoie contacts parents]
+'     SendContacts --> ConfirmParticipants[Professeur confirme nombre exact participants]
+'     ConfirmParticipants --> Decision2{Nombre participants changé?}
+'     
+'     Decision2 -->|Oui| Recalculate[Commercial recalcule devis transport]
+'     Recalculate --> ValidateDossier
+'     Decision2 -->|Non| ValidateDossier[Commercial valide dossier]
+'     
+'     ValidateDossier --> CheckContacts[Appel: are_all_parent_contacts_collected()]
+'     CheckContacts --> DecisionContacts{Tous contacts collectés?}
+'     DecisionContacts -->|Non| ErrorContacts[Erreur: contacts manquants]
+'     ErrorContacts --> End
+'     DecisionContacts -->|Oui| DossierValidated[Travel dossier_validated = True<br/>Appel: sp_collect_parent_contacts()]
+'     
+'     DossierValidated --> CheckInvoice[Appel: can_generate_invoice(travel_id)]
+'     CheckInvoice --> DecisionInvoice{Facture générable?}
+'     DecisionInvoice -->|Non| ErrorInvoice[Erreur: conditions non remplies]
+'     ErrorInvoice --> End
+'     DecisionInvoice -->|Oui| GenerateInvoice[Appel: sp_generate_invoice_from_quote()<br/>- generate_invoice_number()<br/>- calculate_tax_amount()<br/>- calculate_amount_ttc()]
+'     
+'     GenerateInvoice --> ValidateInvoice[Commercial valide facture]
+'     ValidateInvoice --> CheckInvoiceValid[Appel: can_validate_invoice(invoice_id)]
+'     CheckInvoiceValid --> DecisionInvoiceValid{Facture validable?}
+'     DecisionInvoiceValid -->|Non| ErrorInvoiceValid[Erreur: facture non validable]
+'     ErrorInvoiceValid --> End
+'     DecisionInvoiceValid -->|Oui| InvoiceValidated[Facture validée]
+'     ValidateInvoice --> SendInvoice[Envoi facture au professeur]
+'     SendInvoice --> SyncOdoo[Synchronisation Odoo]
+'     SyncOdoo --> Status3[Travel status → CONFIRMED]
+'     Status3 --> InProgress[Voyage en cours]
+'     InProgress --> Status4[Travel status → IN_PROGRESS]
+'     Status4 --> Completed[Voyage terminé]
+'     Completed --> Status5[Travel status → COMPLETED]
+'     Status5 --> End([End])
+'     
+'     Decision1 -->|Non| Cancel[Commercial annule commande]
+'     Cancel --> Status6[Travel status → CANCELLED]
+'     Status6 --> End
+
+@enduml

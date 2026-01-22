@@ -1,0 +1,18 @@
+@startuml
+!theme plain
+
+class TravelService {
+    +create_travel(data)
+    +calculate_price(travel_id)
+    +validate_for_quote(travel_id)
+    +update_status(travel_id, status)
+}
+class SQLFunctions {
+    +calculate_final_travel_price(travel_id)
+    +can_generate_quote(travel_id)
+    +sp_update_travel_status(travel_id, status, user_id)
+}
+
+TravelService --> SQLFunctions : appelle
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' sequenceDiagram
+'     participant Service as Service Validation
+'     participant DB as Base de Données
+'     participant ValidationFuncs as Fonctions Validation
+'     
+'     Service->>DB: SELECT can_generate_quote(:travel_id)
+'     activate DB
+'     
+'     DB->>ValidationFuncs: can_generate_quote()
+'     activate ValidationFuncs
+'     
+'     ValidationFuncs->>DB: Vérifier statut voyage
+'     DB-->>ValidationFuncs: Status = 'draft'
+'     
+'     ValidationFuncs->>DB: Vérifier destinations
+'     DB-->>ValidationFuncs: Destinations existantes
+'     
+'     ValidationFuncs->>DB: Vérifier participants
+'     DB-->>ValidationFuncs: Participants définis
+'     
+'     ValidationFuncs->>DB: Vérifier prix transport
+'     DB-->>ValidationFuncs: Prix transport renseignés
+'     
+'     ValidationFuncs-->>DB: TRUE (toutes conditions OK)
+'     deactivate ValidationFuncs
+'     
+'     DB-->>Service: Validation OK
+'     deactivate DB
+
+@enduml

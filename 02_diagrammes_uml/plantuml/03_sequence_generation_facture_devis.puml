@@ -1,0 +1,58 @@
+@startuml SequenceDiagram_GenerationFactureDevis
+!theme plain
+
+actor Commercial
+participant "API Backend" as API
+participant "Base de Données" as DB
+participant "Fonctions Validation" as ValidationFuncs
+participant "Fonctions Génération" as GenerationFuncs
+participant "Fonctions TVA" as TaxFuncs
+participant "Procédures Stockées" as Procedures
+participant "Odoo" as Odoo
+
+Commercial -> API : POST /api/invoices/generate-from-quote/{quote_id}
+activate API
+
+API -> DB : SELECT can_create_invoice_from_quote(:quote_id)
+activate DB
+DB -> ValidationFuncs : can_create_invoice_from_quote()
+activate ValidationFuncs
+ValidationFuncs -> ValidationFuncs : can_generate_invoice()
+ValidationFuncs --> DB : TRUE
+deactivate ValidationFuncs
+DB --> API : Validation OK
+deactivate DB
+
+API -> DB : CALL sp_generate_invoice_from_quote(:quote_id, @invoice_id)
+activate DB
+
+DB -> GenerationFuncs : generate_invoice_number()
+activate GenerationFuncs
+GenerationFuncs --> DB : "FAC-2025-0001"
+deactivate GenerationFuncs
+
+DB -> DB : SELECT get_quote_total(quote_id)
+DB -> TaxFuncs : calculate_tax_amount(total_ht, 20.00)
+activate TaxFuncs
+TaxFuncs --> DB : Montant TVA
+deactivate TaxFuncs
+
+DB -> DB : INSERT INTO invoices (...)
+DB -> DB : INSERT INTO invoice_lines FROM quote_lines
+DB --> API : Invoice créé (invoice_id)
+deactivate DB
+
+API -> Odoo : Créer facture Odoo
+activate Odoo
+Odoo --> API : Invoice Odoo créée
+deactivate Odoo
+
+API -> DB : UPDATE travels SET odoo_invoice_id = ...
+activate DB
+DB --> API : Mis à jour
+deactivate DB
+
+API --> Commercial : 201 Created (invoice)
+deactivate API
+
+@enduml

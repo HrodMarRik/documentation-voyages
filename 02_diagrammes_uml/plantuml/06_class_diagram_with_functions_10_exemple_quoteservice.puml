@@ -1,0 +1,17 @@
+@startuml
+!theme plain
+
+class QuoteService {
+    +generate_quote(travel_id)
+    +validate_quote(quote_id)
+    +send_quote(quote_id)
+}
+class SQLFunctions {
+    +can_generate_quote(travel_id)
+    +sp_generate_quote_for_travel(travel_id, OUT quote_id)
+    +can_validate_quote(quote_id)
+    +is_quote_expired(quote_id)
+}
+QuoteService --> SQLFunctions : appelle
+
+@enduml

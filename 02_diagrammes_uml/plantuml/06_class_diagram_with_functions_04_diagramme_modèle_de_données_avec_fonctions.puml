@@ -1,0 +1,53 @@
+@startuml
+!theme plain
+
+class User {
+    +int id
+    +string email
+    +string first_name
+    +string last_name
+    +boolean is_active
+}
+class Travel {
+    +int id
+    +string name
+    +enum travel_type
+    +datetime start_date
+    +datetime end_date
+    +int number_participants
+    +enum status
+    +decimal total_price
+}
+class Quote {
+    +int id
+    +int travel_id
+    +string quote_number
+    +enum status
+    +decimal total_amount
+}
+class Invoice {
+    +int id
+    +int travel_id
+    +string invoice_number
+    +enum status
+    +decimal total_amount
+    +decimal tax_amount
+}
+class Contact {
+    +int id
+    +int user_id
+    +boolean email_marketing_consent
+    +timestamp email_opt_out_date
+}
+class Booking {
+    +int id
+    +int travel_id
+    +enum status
+    +enum payment_status
+}
+User --> Contact : a
+Travel --> Quote : génère
+Travel --> Invoice : génère
+Travel --> Booking : contient
+
+@enduml

@@ -1,0 +1,61 @@
+@startuml ClassDiagram_ArchitectureCouches
+!theme plain
+
+package "Couche API" as APILayer {
+    class APILayer {
+        <<layer>>
+        + FastAPIRouter
+        + Middleware
+        + Authentication
+    }
+}
+
+package "Couche Service" as ServiceLayer {
+    class ServiceLayer {
+        <<layer>>
+        + TravelService
+        + QuoteService
+        + InvoiceService
+        + PricingService
+        + ContactService
+    }
+}
+
+package "Couche Modèle" as ModelLayer {
+    class ModelLayer {
+        <<layer>>
+        + User
+        + Travel
+        + Quote
+        + Invoice
+        + Contact
+        + Booking
+    }
+}
+
+package "Couche Fonctions SQL" as SQLFunctionsLayer {
+    class SQLFunctionsLayer {
+        <<layer>>
+        + PricingFunctions
+        + ValidationFunctions
+        + GenerationFunctions
+        + StatisticsFunctions
+    }
+}
+
+package "Couche Base de Données" as DatabaseLayer {
+    class DatabaseLayer {
+        <<layer>>
+        + MySQL
+        + InnoDB
+        + Indexes
+    }
+}
+
+APILayer --> ServiceLayer
+ServiceLayer --> ModelLayer
+ServiceLayer --> SQLFunctionsLayer
+SQLFunctionsLayer --> DatabaseLayer
+ModelLayer --> DatabaseLayer
+
+@enduml

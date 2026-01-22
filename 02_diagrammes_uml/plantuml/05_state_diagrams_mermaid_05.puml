@@ -1,0 +1,40 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' stateDiagram-v2
+'     [*] --> DRAFT: Création
+'     
+'     DRAFT --> QUOTE_SENT: can_generate_quote() = TRUE<br/>sp_generate_quote_for_travel()
+'     
+'     QUOTE_SENT --> QUOTE_VALIDATED: can_validate_quote() = TRUE<br/>is_quote_expired() = FALSE<br/>sp_update_travel_status()
+'     
+'     QUOTE_VALIDATED --> CONFIRMED: can_generate_invoice() = TRUE<br/>are_all_parent_contacts_collected() = TRUE<br/>sp_generate_invoice_from_quote()
+'     
+'     CONFIRMED --> IN_PROGRESS: is_travel_upcoming() = FALSE<br/>is_travel_in_progress() = TRUE
+'     
+'     IN_PROGRESS --> COMPLETED: is_travel_in_past() = TRUE
+'     
+'     DRAFT --> CANCELLED: Annulation
+'     QUOTE_SENT --> CANCELLED: Annulation
+'     QUOTE_VALIDATED --> CANCELLED: Annulation
+'     
+'     COMPLETED --> [*]
+'     CANCELLED --> [*]
+'     
+'     note right of DRAFT
+'         Validation: can_generate_quote()
+'         - Statut = draft ou quote_sent
+'         - Au moins une destination
+'         - Participants définis
+'         - Prix transport renseignés
+'     end note
+'     
+'     note right of QUOTE_VALIDATED
+'         Validation: can_generate_invoice()
+'         - Devis validé
+'         - Tous contacts parents collectés
+'         - Nombre exact participants connu
+'     end note
+
+@enduml

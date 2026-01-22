@@ -1,0 +1,69 @@
+@startuml
+!theme plain
+
+class User {
+    +int id
+    +string email
+    +string first_name
+    +string last_name
+    +boolean is_active
+}
+class Travel {
+    +int id
+    +string name
+    +enum travel_type
+    +datetime start_date
+    +datetime end_date
+    +int number_participants
+    +enum status
+    +decimal total_price
+}
+class Quote {
+    +int id
+    +int travel_id
+    +string quote_number
+    +enum status
+    +decimal total_amount
+}
+class Invoice {
+    +int id
+    +int travel_id
+    +string invoice_number
+    +enum status
+    +decimal total_amount
+    +decimal tax_amount
+}
+class Contact {
+    +int id
+    +int user_id
+    +boolean email_marketing_consent
+    +timestamp email_opt_out_date
+}
+class Booking {
+    +int id
+    +int travel_id
+    +enum status
+    +enum payment_status
+}
+note right of Travel
+Fonctions SQL:\n- calculate_final_travel_price()\n- can_generate_quote()\n- can_generate_invoice()\n- days_until_departure()\n- is_early_bird()\n- are_all_parent_contacts_collected()
+end note
+note right of Quote
+Fonctions SQL:\n- can_validate_quote()\n- is_quote_expired()\n- get_quote_total()\n- generate_quote_number()
+end note
+note right of Invoice
+Fonctions SQL:\n- can_validate_invoice()\n- is_invoice_paid()\n- is_invoice_overdue()\n- get_invoice_total_ttc()\n- generate_invoice_number()
+end note
+note right of Contact
+Fonctions SQL:\n- can_send_marketing_email()\n- can_send_whatsapp()\n- has_email_consent()\n- get_email_bounce_rate()
+end note
+note right of Booking
+Fonctions SQL:\n- is_payment_overdue()\n- should_cancel_booking()\n- has_available_spots()
+end note
+
+User --> Contact : a
+Travel --> Quote : génère
+Travel --> Invoice : génère
+Travel --> Booking : contient
+
+@enduml

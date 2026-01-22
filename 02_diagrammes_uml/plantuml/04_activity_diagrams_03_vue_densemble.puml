@@ -1,0 +1,17 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' flowchart TD
+'     Start([Start]) --> Init[Initialiser calcul]
+'     Init --> CalcTransport[Calcul Transport]
+'     CalcTransport --> CalcActivities[Calcul Activités]
+'     CalcActivities --> CalcLodging[Calcul Hébergement]
+'     CalcLodging --> ApplyReductions[Application Réductions]
+'     ApplyReductions --> ApplyMargin[Application Marge]
+'     ApplyMargin --> CreateQuote[Créer Quote]
+'     CreateQuote --> End([End])
+
+@enduml

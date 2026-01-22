@@ -1,0 +1,40 @@
+@startuml SequenceDiagram_GenerationAutomatiqueProcedures
+!theme plain
+
+participant "Service Métier" as Service
+participant "Base de Données" as DB
+participant "Procédures Stockées" as Procedures
+participant "Fonctions SQL" as Functions
+
+Service -> DB : CALL sp_generate_quote_for_travel(:travel_id, @quote_id)
+activate DB
+
+DB -> Procedures : sp_generate_quote_for_travel()
+activate Procedures
+
+Procedures -> Functions : can_generate_quote()
+activate Functions
+Functions --> Procedures : TRUE
+deactivate Functions
+
+Procedures -> Functions : generate_quote_number()
+activate Functions
+Functions --> Procedures : "DEV-2025-0001"
+deactivate Functions
+
+Procedures -> Functions : calculate_final_travel_price()
+activate Functions
+Functions --> Procedures : Prix total
+deactivate Functions
+
+Procedures -> DB : INSERT INTO quotes
+Procedures -> DB : INSERT INTO quote_lines
+Procedures -> DB : UPDATE travels SET status
+
+Procedures --> DB : quote_id généré
+deactivate Procedures
+
+DB --> Service : Quote créé (quote_id)
+deactivate DB
+
+@enduml

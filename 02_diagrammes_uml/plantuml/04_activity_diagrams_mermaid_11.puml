@@ -1,0 +1,34 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> Identify[Identifier entités à synchroniser]
+'     
+'     Identify --> SyncContacts[Synchronisation Contacts]
+'     SyncContacts --> ContactLoop[Pour chaque Teacher/Guest]
+'     ContactLoop --> Decision1{odoo_partner_id existe?}
+'     Decision1 -->|Non| CreateContact[Créer contact Odoo]
+'     CreateContact --> GetPartnerId[Récupérer odoo_partner_id]
+'     GetPartnerId --> UpdateLocal[Mettre à jour entité locale]
+'     UpdateLocal --> SyncInvoices
+'     Decision1 -->|Oui| UpdateContact[Mettre à jour contact Odoo]
+'     UpdateContact --> SyncInvoices[Synchronisation Factures]
+'     
+'     SyncInvoices --> InvoiceLoop[Pour chaque Invoice validée]
+'     InvoiceLoop --> Decision2{odoo_invoice_id existe?}
+'     Decision2 -->|Non| CreateInvoice[Créer facture Odoo]
+'     CreateInvoice --> GetInvoiceId[Récupérer odoo_invoice_id]
+'     GetInvoiceId --> SyncCRM
+'     Decision2 -->|Oui| SyncCRM[Synchronisation CRM]
+'     
+'     SyncCRM --> CRMLoop[Pour chaque Travel nouveau]
+'     CRMLoop --> Decision3{odoo_lead_id existe?}
+'     Decision3 -->|Non| CreateLead[Créer lead Odoo]
+'     CreateLead --> GetLeadId[Récupérer odoo_lead_id]
+'     GetLeadId --> Log
+'     Decision3 -->|Oui| Log[Logger résultats synchronisation]
+'     
+'     Log --> End([End])
+
+@enduml

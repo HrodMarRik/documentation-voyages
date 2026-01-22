@@ -1,0 +1,30 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' stateDiagram-v2
+'     [*] --> PENDING: Création réservation
+'     
+'     PENDING --> CONFIRMED: Paiement réussi<br/>is_payment_overdue() = FALSE
+'     
+'     PENDING --> CANCELLED: is_payment_overdue() = TRUE<br/>should_cancel_booking() = TRUE<br/>sp_cancel_overdue_bookings()
+'     
+'     CONFIRMED --> CANCELLED: Annulation remboursement
+'     
+'     CONFIRMED --> [*]
+'     CANCELLED --> [*]
+'     
+'     note right of PENDING
+'         Validation: can_create_booking()
+'         - Voyage publié
+'         - Places disponibles
+'         - has_available_spots() = TRUE
+'     end note
+'     
+'     note right of PENDING
+'         Timeout: 24h
+'         Fonction: is_payment_overdue()
+'         Procédure: sp_cancel_overdue_bookings()
+'     end note
+
+@enduml

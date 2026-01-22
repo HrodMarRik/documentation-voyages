@@ -1,0 +1,50 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' sequenceDiagram
+'     actor Professeur
+'     participant API as API Backend
+'     participant Notif as Service Notification
+'     participant DB as Base de Données
+'     participant Email as Service Email
+'     
+'     Professeur->>API: POST /api/public/teacher-form<br/>(dates, destinations, budget)
+'     activate API
+'     
+'     API->>DB: Créer/Update Teacher
+'     activate DB
+'     DB-->>API: Teacher créé
+'     deactivate DB
+'     
+'     API->>DB: Créer Travel (DRAFT)
+'     activate DB
+'     DB-->>API: Travel créé
+'     deactivate DB
+'     
+'     API->>DB: Créer TravelDestination
+'     activate DB
+'     DB-->>API: Destinations liées
+'     deactivate DB
+'     
+'     API->>DB: Créer TeacherForm (token)
+'     activate DB
+'     DB-->>API: Form créé
+'     deactivate DB
+'     
+'     API->>Notif: notify_commercials_new_prospect()
+'     activate Notif
+'     Notif->>DB: Récupérer emails commerciaux
+'     activate DB
+'     DB-->>Notif: Liste emails
+'     deactivate DB
+'     Notif->>Email: Envoyer notification
+'     activate Email
+'     Email-->>Notif: Email envoyé
+'     deactivate Email
+'     deactivate Notif
+'     
+'     API-->>Professeur: 201 Created (token)
+'     deactivate API
+
+@enduml

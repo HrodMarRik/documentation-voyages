@@ -1,0 +1,18 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' flowchart TD
+'     Start([Start]) --> Check{ProgramTemplate validé?}
+'     Check -->|Non| End([Fin])
+'     Check -->|Oui| Loop[Pour chaque ProgramTemplateActivity]
+'     Loop --> GetPrice[Récupérer Activity.price]
+'     GetPrice --> Calc[Calculer: price × participants]
+'     Calc --> Add[Ajouter à total_amount]
+'     Add --> Next{Autre activité?}
+'     Next -->|Oui| Loop
+'     Next -->|Non| End
+
+@enduml

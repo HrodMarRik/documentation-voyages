@@ -1,0 +1,43 @@
+@startuml
+!theme plain
+
+participant "Service Prix" as Service
+participant "Base de Données" as DB
+participant "Fonctions Base" as BaseFuncs
+participant "Fonctions Réductions" as DiscountFuncs
+participant "Fonctions Finales" as FinalFuncs
+
+Service-->DB: SELECT calculate_final_travel_price(:travel_id)
+DB-->BaseFuncs: calculate_transport_price()
+BaseFuncs-->DB: SELECT transport_prices
+DB--->BaseFuncs: Prix transport
+BaseFuncs--->DB: Total transport
+DB-->BaseFuncs: calculate_activities_price()
+BaseFuncs-->DB: SELECT activities
+DB--->BaseFuncs: Prix activités
+BaseFuncs--->DB: Total activités
+DB-->BaseFuncs: calculate_lodging_price()
+BaseFuncs-->DB: SELECT travels.lodging_price_per_person
+DB--->BaseFuncs: Prix hébergement
+BaseFuncs--->DB: Total hébergement
+DB-->BaseFuncs: calculate_base_price()
+BaseFuncs-->BaseFuncs: Somme transport + activités + hébergement
+BaseFuncs--->DB: Prix de base
+DB-->DiscountFuncs: calculate_participant_discount()
+DiscountFuncs--->DB: Réduction participants
+DB-->DiscountFuncs: is_early_bird()
+DiscountFuncs-->DB: SELECT start_date
+DB--->DiscountFuncs: Date départ
+DiscountFuncs--->DB: TRUE/FALSE
+DB-->DiscountFuncs: calculate_total_discount()
+DiscountFuncs-->DiscountFuncs: Combiner réductions
+DiscountFuncs--->DB: Réduction totale
+DB-->FinalFuncs: calculate_travel_price_with_discounts()
+FinalFuncs-->FinalFuncs: Appliquer réductions
+FinalFuncs--->DB: Prix avec réductions
+DB-->FinalFuncs: calculate_travel_price_with_margin()
+FinalFuncs-->FinalFuncs: Appliquer marge
+FinalFuncs--->DB: Prix final
+DB--->Service: Prix final calculé
+
+@enduml

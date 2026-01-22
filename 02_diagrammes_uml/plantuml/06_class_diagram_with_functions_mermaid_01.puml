@@ -1,0 +1,135 @@
+@startuml
+!theme plain
+
+class Travel {
+    +int id
+    +string name
+    +enum travel_type
+    +datetime start_date
+    +datetime end_date
+    +int number_participants
+    +enum status
+    +decimal total_price
+    +boolean parent_contacts_collected
+    +calculate_final_travel_price() decimal
+    +can_generate_quote() boolean
+    +can_generate_invoice() boolean
+    +days_until_departure() int
+    +is_early_bird() boolean
+    +are_all_parent_contacts_collected() boolean
+}
+class Quote {
+    +int id
+    +int travel_id
+    +string quote_number
+    +enum status
+    +decimal total_amount
+    +datetime expires_at
+    +can_validate_quote() boolean
+    +is_quote_expired() boolean
+    +get_quote_total() decimal
+    +calculate_quote_line_total(line_type) decimal
+}
+class Invoice {
+    +int id
+    +int travel_id
+    +string invoice_number
+    +enum status
+    +decimal total_amount
+    +decimal tax_amount
+    +datetime due_date
+    +can_validate_invoice() boolean
+    +is_invoice_paid() boolean
+    +is_invoice_overdue() boolean
+    +get_invoice_total_ttc() decimal
+    +days_until_invoice_due() int
+}
+class Contact {
+    +int id
+    +int user_id
+    +boolean email_marketing_consent
+    +timestamp email_opt_out_date
+    +boolean whatsapp_consent
+    +timestamp whatsapp_opt_out_date
+    +can_send_marketing_email() boolean
+    +can_send_whatsapp() boolean
+    +has_email_consent() boolean
+    +get_email_bounce_rate() decimal
+}
+class Booking {
+    +int id
+    +int travel_id
+    +int student_user_id
+    +enum status
+    +enum payment_status
+    +is_payment_overdue() boolean
+    +should_cancel_booking() boolean
+}
+class Activity {
+    +int id
+    +int travel_id
+    +datetime date
+    +decimal price_per_person
+}
+class PricingFunctions {
+    <<SQL Functions>>
+    +calculate_transport_price(travel_id, participants) decimal
+    +calculate_activities_price(travel_id, participants) decimal
+    +calculate_lodging_price(travel_id, participants) decimal
+    +calculate_base_price(travel_id, participants) decimal
+    +calculate_participant_discount(participants) decimal
+    +is_early_bird(travel_id) boolean
+    +calculate_total_discount(travel_id, participants) decimal
+    +calculate_final_travel_price(travel_id) decimal
+}
+class ValidationFunctions {
+    <<SQL Functions>>
+    +can_generate_quote(travel_id) boolean
+    +can_validate_quote(quote_id) boolean
+    +can_generate_invoice(travel_id) boolean
+    +can_validate_invoice(invoice_id) boolean
+    +is_planning_valid(travel_id) boolean
+    +has_available_spots(linguistic_travel_id) boolean
+    +are_all_parent_contacts_collected(travel_id) boolean
+}
+class GenerationFunctions {
+    <<SQL Functions>>
+    +generate_quote_number() string
+    +generate_invoice_number() string
+    +generate_booking_number() string
+    +generate_token() string
+}
+class StatisticsFunctions {
+    <<SQL Functions>>
+    +get_total_revenue_by_period(start_date, end_date) decimal
+    +get_travel_conversion_rate() decimal
+    +get_average_travel_price(travel_type) decimal
+    +get_total_participants_by_period(start_date, end_date) int
+}
+class StoredProcedures {
+    <<SQL Procedures>>
+    +sp_generate_quote_for_travel(travel_id, OUT quote_id)
+    +sp_generate_invoice_from_quote(quote_id, OUT invoice_id)
+    +sp_update_travel_status(travel_id, new_status, user_id)
+    +sp_collect_parent_contacts(travel_id)
+    +sp_cancel_overdue_bookings()
+}
+
+Travel --> Quote : génère
+Travel --> Invoice : génère
+Travel --> Booking : contient
+Travel --> Activity : comprend
+Travel ..> PricingFunctions : utilise
+Travel ..> ValidationFunctions : utilise
+Quote --> Invoice : génère
+Quote ..> ValidationFunctions : utilise
+Quote ..> GenerationFunctions : utilise
+Invoice ..> ValidationFunctions : utilise
+Invoice ..> GenerationFunctions : utilise
+Contact ..> ValidationFunctions : utilise
+Booking ..> ValidationFunctions : utilise
+PricingFunctions ..> ValidationFunctions
+ValidationFunctions ..> StoredProcedures
+GenerationFunctions ..> StoredProcedures
+
+@enduml

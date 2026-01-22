@@ -1,0 +1,31 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> GetTravel[Récupérer Travel]
+'     GetTravel --> CallFinal[Appel: calculate_final_travel_price(travel_id)]
+'     
+'     CallFinal --> CalcTransport[calculate_transport_price()]
+'     CalcTransport --> CalcActivities[calculate_activities_price()]
+'     CalcActivities --> CalcLodging[calculate_lodging_price()]
+'     CalcLodging --> CalcBase[calculate_base_price()<br/>Somme transport + activités + hébergement]
+'     
+'     CalcBase --> CalcParticipant[calculate_participant_discount()<br/>Selon nombre participants]
+'     CalcParticipant --> CheckEarly[is_early_bird()<br/>Vérifier > 90 jours]
+'     
+'     CheckEarly --> CalcEarly{Early bird?}
+'     CalcEarly -->|Oui| CalcEarlyDiscount[calculate_early_bird_discount()<br/>5% réduction]
+'     CalcEarly -->|Non| CalcTotalDiscount
+'     CalcEarlyDiscount --> CalcTotalDiscount[calculate_total_discount()<br/>Combiner réductions]
+'     
+'     CalcTotalDiscount --> ApplyDiscounts[calculate_travel_price_with_discounts()<br/>Appliquer réductions]
+'     ApplyDiscounts --> CheckMargin{Marge renseignée?}
+'     
+'     CheckMargin -->|Oui| ApplyMargin[calculate_travel_price_with_margin()<br/>Appliquer marge]
+'     CheckMargin -->|Non| ReturnPrice
+'     ApplyMargin --> ReturnPrice[Retourner prix final]
+'     
+'     ReturnPrice --> End([End])
+
+@enduml

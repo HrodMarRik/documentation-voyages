@@ -1,0 +1,53 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' sequenceDiagram
+'     actor Utilisateur
+'     participant API as API Backend
+'     participant AuthService as Service Auth
+'     participant DB as Base de Données
+'     participant TOTP as TOTP
+'     
+'     Utilisateur->>API: POST /api/auth/login<br/>(email, password)
+'     activate API
+'     
+'     API->>AuthService: verify_credentials()
+'     activate AuthService
+'     AuthService->>DB: Récupérer User
+'     activate DB
+'     DB-->>AuthService: User
+'     deactivate DB
+'     AuthService->>AuthService: Vérifier password_hash
+'     AuthService-->>API: User valide
+'     deactivate AuthService
+'     
+'     API->>DB: Récupérer TwoFactorAuth
+'     activate DB
+'     DB-->>API: 2FA config
+'     deactivate DB
+'     
+'     alt 2FA activé
+'         API-->>Utilisateur: 200 OK (requires_2fa: true)
+'         Utilisateur->>API: POST /api/auth/2fa/verify<br/>(token, code)
+'         activate API
+'         API->>TOTP: Vérifier code TOTP
+'         activate TOTP
+'         TOTP-->>API: Code valide
+'         deactivate TOTP
+'         API->>AuthService: Générer JWT tokens
+'         activate AuthService
+'         AuthService-->>API: access_token + refresh_token
+'         deactivate AuthService
+'         API-->>Utilisateur: 200 OK (tokens)
+'     else 2FA non activé
+'         API->>AuthService: Générer JWT tokens
+'         activate AuthService
+'         AuthService-->>API: access_token + refresh_token
+'         deactivate AuthService
+'         API-->>Utilisateur: 200 OK (tokens)
+'     end
+'     
+'     deactivate API
+
+@enduml

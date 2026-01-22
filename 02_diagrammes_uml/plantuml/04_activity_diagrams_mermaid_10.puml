@@ -1,0 +1,30 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> Input[Utilisateur saisit email/password]
+'     Input --> Verify[Vérifier credentials]
+'     Verify --> Decision1{Credentials valides?}
+'     
+'     Decision1 -->|Non| Error1[Erreur authentification]
+'     Error1 --> End1([End])
+'     
+'     Decision1 -->|Oui| Decision2{2FA activé?}
+'     
+'     Decision2 -->|Oui| Return2FA[Retourner requires_2fa: true]
+'     Return2FA --> InputCode[Utilisateur saisit code TOTP]
+'     InputCode --> Decision3{Code TOTP valide?}
+'     
+'     Decision3 -->|Oui| GenerateTokens[Générer JWT tokens]
+'     GenerateTokens --> ReturnTokens[Retourner access_token + refresh_token]
+'     ReturnTokens --> End2([End])
+'     
+'     Decision3 -->|Non| Error2[Erreur code invalide]
+'     Error2 --> End3([End])
+'     
+'     Decision2 -->|Non| GenerateTokens2[Générer JWT tokens]
+'     GenerateTokens2 --> ReturnTokens2[Retourner access_token + refresh_token]
+'     ReturnTokens2 --> End4([End])
+
+@enduml

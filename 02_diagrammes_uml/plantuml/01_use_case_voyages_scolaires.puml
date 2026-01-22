@@ -1,0 +1,58 @@
+@startuml UseCaseDiagram_VoyagesScolaires
+!theme plain
+skinparam linetype ortho
+
+left to right direction
+
+actor Professeur
+actor Commercial
+actor Comptable
+
+package "Phase 1: Création & Planning" {
+    usecase "UC1: Créer demande voyage\nFonction: generate_token" as UC1
+    usecase "UC2: Générer planning préconstruit" as UC2
+    usecase "UC3: Valider planning\nFonction: is_planning_valid" as UC3
+}
+
+package "Phase 2: Devis" {
+    usecase "UC4: Générer devis\nFonction: can_generate_quote\nProcédure: sp_generate_quote_for_travel\nFonction: calculate_final_travel_price" as UC4
+    usecase "UC5: Envoyer devis\nFonction: generate_quote_number" as UC5
+    usecase "UC6: Valider devis\nFonction: can_validate_quote\nFonction: is_quote_expired" as UC6
+}
+
+package "Phase 3: Contacts & Facturation" {
+    usecase "UC7: Collecter contacts parents\nFonction: are_all_parent_contacts_collected\nProcédure: sp_collect_parent_contacts" as UC7
+    usecase "UC8: Générer facture\nFonction: can_generate_invoice\nProcédure: sp_generate_invoice_from_quote\nFonction: calculate_tax_amount" as UC8
+    usecase "UC9: Valider facture\nFonction: can_validate_invoice" as UC9
+    usecase "UC10: Exporter Factur-X" as UC10
+}
+
+' Relations Professeur
+Professeur --> UC1
+Professeur --> UC6
+Professeur --> UC7
+
+' Relations Commercial
+Commercial --> UC2
+Commercial --> UC3
+Commercial --> UC4
+Commercial --> UC5
+Commercial --> UC8
+Commercial --> UC9
+
+' Relations Comptable
+Comptable --> UC9
+Comptable --> UC10
+
+' Relations entre phases
+UC1 ..> UC2 : <<include>>
+UC2 ..> UC3 : <<include>>
+UC3 ..> UC4 : <<include>>
+UC4 ..> UC5 : <<include>>
+UC5 ..> UC6 : <<include>>
+UC6 ..> UC7 : <<include>>
+UC7 ..> UC8 : <<include>>
+UC8 ..> UC9 : <<include>>
+UC9 ..> UC10 : <<include>>
+
+@enduml

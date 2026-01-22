@@ -1,0 +1,47 @@
+@startuml SequenceDiagram_GenerationDevis
+!theme plain
+
+actor Commercial
+participant "API Backend" as API
+participant "Base de Données" as DB
+participant "Fonctions SQL" as Functions
+
+Commercial -> API : POST /api/quotes/generate/{travel_id}
+activate API
+
+API -> DB : Vérifier can_generate_quote(travel_id)
+activate DB
+DB -> Functions : can_generate_quote()
+activate Functions
+Functions --> DB : TRUE/FALSE
+deactivate Functions
+DB --> API : Validation OK
+deactivate DB
+
+API -> DB : CALL sp_generate_quote_for_travel(travel_id, @quote_id)
+activate DB
+
+DB -> Functions : generate_quote_number()
+activate Functions
+Functions --> DB : Numéro devis
+deactivate Functions
+
+DB -> Functions : calculate_final_travel_price(travel_id)
+activate Functions
+Functions -> Functions : calculate_transport_price()
+Functions -> Functions : calculate_activities_price()
+Functions -> Functions : calculate_lodging_price()
+Functions -> Functions : calculate_participant_discount()
+Functions -> Functions : is_early_bird()
+Functions -> Functions : calculate_total_discount()
+Functions --> DB : Prix final
+deactivate Functions
+
+DB -> DB : Créer Quote + QuoteLines
+DB --> API : Quote créé (quote_id)
+deactivate DB
+
+API --> Commercial : 201 Created (quote)
+deactivate API
+
+@enduml

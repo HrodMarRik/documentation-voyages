@@ -1,0 +1,37 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' stateDiagram-v2
+'     [*] --> DRAFT: Création devis
+'     
+'     DRAFT --> SENT: Devis envoyé
+'     SENT --> VALIDATED: Devis validé
+'     SENT --> REJECTED: Devis refusé
+'     
+'     VALIDATED --> [*]: Facture générée
+'     REJECTED --> [*]
+'     DRAFT --> [*]: Suppression
+'     
+'     note right of DRAFT
+'         Devis en cours de création
+'         Modifiable
+'         Fonction: can_send_quote()
+'     end note
+'     
+'     note right of SENT
+'         Devis envoyé au client
+'         En attente de réponse
+'         Expiration possible
+'         Fonction: is_quote_expired()
+'         Fonction: can_validate_quote()
+'     end note
+'     
+'     note right of VALIDATED
+'         Devis accepté
+'         Peut générer facture
+'         Fonction: can_create_invoice_from_quote()
+'         Procédure: sp_generate_invoice_from_quote()
+'     end note
+
+@enduml

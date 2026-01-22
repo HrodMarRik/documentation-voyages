@@ -1,0 +1,14 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> Loop[Pour chaque TravelDestination]
+'     Loop --> GetPrice[Récupérer TransportPrice<br/>destination_id, date]
+'     GetPrice --> Calc[Calculer: price × participants]
+'     Calc --> Add[Ajouter à total_amount]
+'     Add --> Next{Autre destination?}
+'     Next -->|Oui| Loop
+'     Next -->|Non| End([Fin])
+
+@enduml

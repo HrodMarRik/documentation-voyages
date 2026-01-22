@@ -1,0 +1,12 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> Check{lodging_price_per_person renseigné?}
+'     Check -->|Non| End([Fin])
+'     Check -->|Oui| Calc[Calculer: lodging_price × participants × jours]
+'     Calc --> Add[Ajouter à total_amount]
+'     Add --> End
+
+@enduml

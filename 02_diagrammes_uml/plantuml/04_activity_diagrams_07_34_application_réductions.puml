@@ -1,0 +1,25 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' flowchart TD
+'     Start([Start]) --> Check30{participants ≥ 30?}
+'     Check30 -->|Oui| Reduce10[total_amount × 0.90<br/>10% réduction]
+'     Check30 -->|Non| Check20{participants ≥ 20?}
+'     Check20 -->|Oui| Reduce5[total_amount × 0.95<br/>5% réduction]
+'     Check20 -->|Non| Check10{participants ≥ 10?}
+'     Check10 -->|Oui| Reduce3[total_amount × 0.97<br/>3% réduction]
+'     Check10 -->|Non| CheckEarly
+'     
+'     Reduce10 --> CheckEarly
+'     Reduce5 --> CheckEarly
+'     Reduce3 --> CheckEarly
+'     
+'     CheckEarly{Réservation > 3 mois?}
+'     CheckEarly -->|Oui| EarlyBird[total_amount × 0.95<br/>5% early bird]
+'     CheckEarly -->|Non| End([Fin])
+'     EarlyBird --> End
+
+@enduml

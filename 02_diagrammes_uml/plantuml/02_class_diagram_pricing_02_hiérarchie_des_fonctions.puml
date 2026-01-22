@@ -1,0 +1,21 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' graph TD
+'     F1[calculate_final_travel_price] --> F2[calculate_travel_price_with_margin]
+'     F2 --> F3[calculate_travel_price_with_discounts]
+'     F3 --> F4[calculate_base_price]
+'     F3 --> F5[calculate_total_discount]
+'     
+'     F4 --> F6[calculate_transport_price]
+'     F4 --> F7[calculate_activities_price]
+'     F4 --> F8[calculate_lodging_price]
+'     
+'     F5 --> F9[calculate_participant_discount]
+'     F5 --> F10[calculate_early_bird_discount]
+'     F10 --> F11[is_early_bird]
+
+@enduml

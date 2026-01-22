@@ -57,9 +57,11 @@ Cette documentation présente un système intégré de gestion de voyages avec i
 ### 09_documentation_technique/
 - Guides d'installation, développement, déploiement
 - Configuration, maintenance, migration, troubleshooting
+- **03_plan_gantt_projet.md** : Plan temporel complet (Gantt) du projet
 
 ### 10_documentation_integrations/
 - Guides d'intégration Odoo, Stripe, Email, WhatsApp
+- **03_integration_odoo_webhooks.md** : Webhooks Odoo → API (synchronisation bidirectionnelle)
 
 ### 11_documentation_metier/
 - Guides utilisateur par rôle (Admin, Commercial, Professeur, etc.)

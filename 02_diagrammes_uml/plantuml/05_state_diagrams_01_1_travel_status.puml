@@ -1,0 +1,55 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' stateDiagram-v2
+'     [*] --> DRAFT: Création voyage
+'     
+'     DRAFT --> QUOTE_SENT: Devis envoyé
+'     QUOTE_SENT --> QUOTE_VALIDATED: Devis validé
+'     QUOTE_SENT --> CANCELLED: Annulation
+'     
+'     QUOTE_VALIDATED --> CONFIRMED: Dossier validé + Facture générée
+'     QUOTE_VALIDATED --> CANCELLED: Annulation
+'     
+'     CONFIRMED --> IN_PROGRESS: Début voyage
+'     IN_PROGRESS --> COMPLETED: Fin voyage
+'     
+'     DRAFT --> CANCELLED: Annulation à tout moment
+'     QUOTE_SENT --> CANCELLED: Annulation
+'     QUOTE_VALIDATED --> CANCELLED: Annulation
+'     CONFIRMED --> CANCELLED: Annulation rare
+'     
+'     COMPLETED --> [*]
+'     CANCELLED --> [*]
+'     
+'     note right of DRAFT
+'         État initial
+'         Formulaire rempli
+'         Fonction: can_generate_quote()
+'     end note
+'     
+'     note right of QUOTE_SENT
+'         Devis envoyé au professeur
+'         En attente de réponse
+'         Fonction: is_quote_expired()
+'         Fonction: days_until_quote_expiry()
+'     end note
+'     
+'     note right of QUOTE_VALIDATED
+'         Devis accepté
+'         Contacts parents collectés
+'         Fonction: are_all_parent_contacts_collected()
+'         Fonction: can_generate_invoice()
+'     end note
+'     
+'     note right of CONFIRMED
+'         Facture générée et validée
+'         Voyage confirmé
+'         Fonction: can_validate_invoice()
+'         Procédure: sp_generate_invoice_from_quote()
+'     end note
+
+@enduml

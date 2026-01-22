@@ -1,0 +1,50 @@
+@startuml
+!theme plain
+
+class Travel {
+    +int id
+    +string name
+    +int number_participants
+    +decimal total_price
+    +datetime start_date
+    +datetime end_date
+    +decimal margin_percent
+}
+class TransportPrice {
+    +int id
+    +int destination_id
+    +date date
+    +decimal price_per_person
+}
+class Activity {
+    +int id
+    +int travel_id
+    +decimal price_per_person
+}
+class PricingFunctions {
+    <<SQL Functions>>
+    +calculate_transport_price(travel_id, participants) decimal
+    +calculate_activities_price(travel_id, participants) decimal
+    +calculate_lodging_price(travel_id, participants) decimal
+    +calculate_base_price(travel_id, participants) decimal
+    +calculate_participant_discount(participants) decimal
+    +is_early_bird(travel_id) boolean
+    +calculate_early_bird_discount(travel_id) decimal
+    +calculate_total_discount(travel_id, participants) decimal
+    +calculate_travel_price_with_discounts(travel_id, participants) decimal
+    +calculate_travel_price_with_margin(travel_id, participants, margin) decimal
+    +calculate_final_travel_price(travel_id) decimal
+}
+class PricingService {
+    +calculate_price(travel_id) decimal
+    +apply_discounts(travel_id, participants) decimal
+    +calculate_final_price(travel_id) decimal
+}
+
+Travel --> TransportPrice : utilise pour calcul
+Travel --> Activity : contient
+Travel --> PricingFunctions : utilise
+PricingService --> PricingFunctions : appelle
+PricingService --> Travel : modifie total_price
+
+@enduml

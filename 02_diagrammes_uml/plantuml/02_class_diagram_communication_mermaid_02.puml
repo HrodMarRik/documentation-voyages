@@ -1,0 +1,13 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' graph TB
+'     CheckEmail[can_send_marketing_email] --> HasConsent[has_email_consent]
+'     CheckEmail --> NotOptOut[NOT is_contact_opted_out_email]
+'     
+'     CheckWhatsApp[can_send_whatsapp] --> HasWhatsAppConsent[has_whatsapp_consent]
+'     CheckWhatsApp --> NotOptOutWhatsApp[NOT is_contact_opted_out_whatsapp]
+'     CheckWhatsApp --> IsVerified[whatsapp_verified = TRUE]
+
+@enduml

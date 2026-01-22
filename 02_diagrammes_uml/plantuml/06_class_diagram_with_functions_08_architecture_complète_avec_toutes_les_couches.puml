@@ -1,0 +1,57 @@
+@startuml
+!theme plain
+
+class Frontend {
+    +Vue.js Components
+    +Element Plus UI
+    +Pinia Stores
+}
+class APILayer {
+    +FastAPI Routers
+    +JWT Authentication
+    +Permission Middleware
+}
+class ServiceLayer {
+    +TravelService
+    +QuoteService
+    +InvoiceService
+    +PricingService
+    +ContactService
+    +OdooSyncService
+}
+class ModelLayer {
+    +SQLAlchemy Models
+    +User Model
+    +Travel Model
+    +Quote Model
+    +Invoice Model
+}
+class SQLFunctionsLayer {
+    +PricingFunctions
+    +ValidationFunctions
+    +GenerationFunctions
+    +StatisticsFunctions
+    +CommunicationFunctions
+}
+class StoredProceduresLayer {
+    +sp_generate_quote_for_travel
+    +sp_generate_invoice_from_quote
+    +sp_update_travel_status
+    +sp_collect_parent_contacts
+}
+class DatabaseLayer {
+    +MySQL 8.0+
+    +InnoDB Engine
+    +Indexes
+    +Tables
+}
+Frontend --> APILayer
+APILayer --> ServiceLayer
+ServiceLayer --> ModelLayer
+ServiceLayer --> SQLFunctionsLayer
+ServiceLayer --> StoredProceduresLayer
+SQLFunctionsLayer --> DatabaseLayer
+StoredProceduresLayer --> DatabaseLayer
+ModelLayer --> DatabaseLayer
+
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+!theme plain
+
+actor Professeur
+participant "API Backend" as API
+participant "Service Notification" as Notif
+participant "Base de Données" as DB
+participant "Service Email" as Email
+
+Professeur-->API: POST /api/public/teacher-form<br/>(dates, destinations, budget)
+API-->DB: Créer/Update Teacher
+DB--->API: Teacher créé
+API-->DB: Créer Travel (DRAFT)
+DB--->API: Travel créé
+API-->DB: Créer TravelDestination
+DB--->API: Destinations liées
+API-->DB: Créer TeacherForm (token)
+DB--->API: Form créé
+API-->Notif: notify_commercials_new_prospect()
+Notif-->DB: Récupérer emails commerciaux
+DB--->Notif: Liste emails
+Notif-->Email: Envoyer notification
+Email--->Notif: Email envoyé
+API--->Professeur: 201 Created (token)
+
+@enduml

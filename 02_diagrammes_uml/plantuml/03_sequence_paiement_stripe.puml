@@ -1,0 +1,53 @@
+@startuml SequenceDiagram_PaiementStripe
+!theme plain
+
+actor Guest
+participant "Frontend" as Frontend
+participant "API Backend" as API
+participant "Service Paiement" as PaymentService
+participant "Stripe API" as Stripe
+participant "Base de Données" as DB
+
+Guest -> Frontend : S'inscrire voyage linguistique
+Frontend -> API : POST /api/guests\n(inscription data)
+activate API
+
+API -> DB : Créer Guest + Booking
+activate DB
+DB --> API : Booking créé (status: PENDING)
+deactivate DB
+
+API -> PaymentService : create_payment_intent()
+activate PaymentService
+PaymentService -> Stripe : Créer PaymentIntent
+activate Stripe
+Stripe --> PaymentService : client_secret
+deactivate Stripe
+PaymentService --> API : client_secret
+deactivate PaymentService
+
+API --> Frontend : 201 Created (booking_id, client_secret)
+Frontend --> Guest : Redirection Stripe Checkout
+
+Guest -> Stripe : Paiement
+Stripe -> API : Webhook payment_intent.succeeded
+activate API
+
+API -> DB : Mettre à jour Booking\n(status: CONFIRMED, payment_status: PAID)
+activate DB
+DB --> API : Mis à jour
+deactivate DB
+
+API -> PaymentService : Envoyer email confirmation
+activate PaymentService
+PaymentService --> API : Email envoyé
+deactivate PaymentService
+
+API --> Stripe : 200 OK
+deactivate API
+
+Stripe --> Guest : Confirmation paiement
+Frontend -> API : GET /api/bookings/{id}
+API --> Frontend : Booking confirmé
+
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' stateDiagram-v2
+'     [*] --> PENDING: Inscription voyage linguistique
+'     
+'     PENDING --> CONFIRMED: Paiement réussi
+'     PENDING --> CANCELLED: Paiement échoué ou timeout
+'     
+'     CONFIRMED --> CANCELLED: Annulation remboursement
+'     
+'     CONFIRMED --> [*]
+'     CANCELLED --> [*]
+'     
+'     note right of PENDING
+'         Réservation créée
+'         En attente de paiement
+'         Timeout: 24h
+'     end note
+'     
+'     note right of CONFIRMED
+'         Paiement effectué
+'         Réservation confirmée
+'     end note
+
+@enduml

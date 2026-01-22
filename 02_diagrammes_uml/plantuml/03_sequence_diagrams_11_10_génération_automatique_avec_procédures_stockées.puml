@@ -1,0 +1,23 @@
+@startuml
+!theme plain
+
+participant "Service Métier" as Service
+participant "Base de Données" as DB
+participant "Procédures Stockées" as Procedures
+participant "Fonctions SQL" as Functions
+
+Service-->DB: CALL sp_generate_quote_for_travel(:travel_id, @quote_id)
+DB-->Procedures: sp_generate_quote_for_travel()
+Procedures-->Functions: can_generate_quote()
+Functions--->Procedures: TRUE
+Procedures-->Functions: generate_quote_number()
+Functions--->Procedures: "DEV-2025-0001"
+Procedures-->Functions: calculate_final_travel_price()
+Functions--->Procedures: Prix total
+Procedures-->DB: INSERT INTO quotes
+Procedures-->DB: INSERT INTO quote_lines
+Procedures-->DB: UPDATE travels SET status
+Procedures--->DB: quote_id généré
+DB--->Service: Quote créé (quote_id)
+
+@enduml

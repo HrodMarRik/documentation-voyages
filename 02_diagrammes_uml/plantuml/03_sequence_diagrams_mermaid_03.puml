@@ -1,0 +1,61 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' sequenceDiagram
+'     actor Commercial
+'     participant API as API Backend
+'     participant DB as Base de Données
+'     participant PricingFuncs as Fonctions Prix
+'     participant ValidationFuncs as Fonctions Validation
+'     participant GenerationFuncs as Fonctions Génération
+'     
+'     Commercial->>API: POST /api/quotes/generate/{travel_id}
+'     activate API
+'     
+'     API->>DB: SELECT can_generate_quote(:travel_id)
+'     activate DB
+'     DB->>ValidationFuncs: can_generate_quote()
+'     activate ValidationFuncs
+'     ValidationFuncs->>DB: Vérifier statut, destinations, participants
+'     DB-->>ValidationFuncs: Données
+'     ValidationFuncs-->>DB: TRUE
+'     deactivate ValidationFuncs
+'     DB-->>API: Validation OK
+'     deactivate DB
+'     
+'     API->>DB: CALL sp_generate_quote_for_travel(:travel_id, @quote_id)
+'     activate DB
+'     
+'     DB->>GenerationFuncs: generate_quote_number()
+'     activate GenerationFuncs
+'     GenerationFuncs-->>DB: "DEV-2025-0001"
+'     deactivate GenerationFuncs
+'     
+'     DB->>PricingFuncs: calculate_final_travel_price(travel_id)
+'     activate PricingFuncs
+'     
+'     PricingFuncs->>PricingFuncs: calculate_transport_price()
+'     PricingFuncs->>PricingFuncs: calculate_activities_price()
+'     PricingFuncs->>PricingFuncs: calculate_lodging_price()
+'     PricingFuncs->>PricingFuncs: calculate_base_price()
+'     
+'     PricingFuncs->>PricingFuncs: calculate_participant_discount()
+'     PricingFuncs->>PricingFuncs: is_early_bird()
+'     PricingFuncs->>PricingFuncs: calculate_total_discount()
+'     PricingFuncs->>PricingFuncs: calculate_travel_price_with_discounts()
+'     PricingFuncs->>PricingFuncs: calculate_travel_price_with_margin()
+'     
+'     PricingFuncs-->>DB: Prix final calculé
+'     deactivate PricingFuncs
+'     
+'     DB->>DB: INSERT INTO quotes (...)
+'     DB->>DB: INSERT INTO quote_lines (...)
+'     DB->>DB: UPDATE travels SET status = 'quote_sent'
+'     DB-->>API: Quote créé (quote_id)
+'     deactivate DB
+'     
+'     API-->>Commercial: 201 Created (quote)
+'     deactivate API
+
+@enduml

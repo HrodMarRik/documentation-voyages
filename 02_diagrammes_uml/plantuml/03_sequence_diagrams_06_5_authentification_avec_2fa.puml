@@ -1,0 +1,29 @@
+@startuml
+!theme plain
+
+actor Utilisateur
+participant "API Backend" as API
+participant "Service Auth" as AuthService
+participant "Base de Données" as DB
+participant "TOTP" as TOTP
+
+Utilisateur-->API: POST /api/auth/login<br/>(email, password)
+API-->AuthService: verify_credentials()
+AuthService-->DB: Récupérer User
+DB--->AuthService: User
+AuthService-->AuthService: Vérifier password_hash
+AuthService--->API: User valide
+API-->DB: Récupérer TwoFactorAuth
+DB--->API: 2FA config
+API--->Utilisateur: 200 OK (requires_2fa: true)
+Utilisateur-->API: POST /api/auth/2fa/verify<br/>(token, code)
+API-->TOTP: Vérifier code TOTP
+TOTP--->API: Code valide
+API-->AuthService: Générer JWT tokens
+AuthService--->API: access_token + refresh_token
+API--->Utilisateur: 200 OK (tokens)
+API-->AuthService: Générer JWT tokens
+AuthService--->API: access_token + refresh_token
+API--->Utilisateur: 200 OK (tokens)
+
+@enduml

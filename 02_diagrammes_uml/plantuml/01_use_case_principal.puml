@@ -1,0 +1,107 @@
+@startuml UseCaseDiagram_Principal
+!theme plain
+skinparam linetype ortho
+
+left to right direction
+
+actor Admin
+actor Commercial
+actor Professeur
+actor Comptable
+actor "Guest Invité" as Guest
+actor Système
+
+package "Authentification & Autorisation" {
+    usecase "Se connecter" as UC1
+    usecase "Gérer utilisateurs" as UC2
+    usecase "Gérer rôles/permissions" as UC3
+    usecase "Configurer 2FA" as UC4
+}
+
+package "Gestion Voyages Scolaires" {
+    usecase "Créer demande voyage" as UC5
+    usecase "Générer planning" as UC6
+    usecase "Valider planning" as UC7
+    usecase "Générer devis" as UC8
+    usecase "Valider devis" as UC9
+    usecase "Collecter contacts parents" as UC10
+    usecase "Générer facture" as UC11
+    usecase "Valider facture" as UC12
+}
+
+package "Voyages Linguistiques" {
+    usecase "Consulter catalogue" as UC13
+    usecase "S'inscrire voyage" as UC14
+    usecase "Payer en ligne" as UC15
+}
+
+package "Catalogue" {
+    usecase "Gérer destinations" as UC16
+    usecase "Gérer activités" as UC17
+    usecase "Gérer programmes" as UC18
+}
+
+package "Communication" {
+    usecase "Envoyer email marketing" as UC19
+    usecase "Envoyer WhatsApp" as UC20
+    usecase "Gérer consentements" as UC21
+}
+
+package "Rapports & Statistiques" {
+    usecase "Consulter statistiques" as UC22
+    usecase "Générer rapports" as UC23
+}
+
+package "Intégration Odoo" {
+    usecase "Synchroniser contacts" as UC24
+    usecase "Synchroniser factures" as UC25
+    usecase "Synchroniser leads" as UC26
+}
+
+' Relations Admin
+Admin --> UC2
+Admin --> UC3
+Admin --> UC22
+Admin --> UC23
+Admin --> UC1
+Admin --> UC4
+
+' Relations Commercial
+Commercial --> UC6
+Commercial --> UC7
+Commercial --> UC8
+Commercial --> UC9
+Commercial --> UC11
+Commercial --> UC12
+Commercial --> UC16
+Commercial --> UC17
+Commercial --> UC18
+Commercial --> UC22
+Commercial --> UC1
+Commercial --> UC4
+
+' Relations Professeur
+Professeur --> UC5
+Professeur --> UC10
+Professeur --> UC1
+Professeur --> UC4
+
+' Relations Comptable
+Comptable --> UC12
+Comptable --> UC23
+Comptable --> UC1
+Comptable --> UC4
+
+' Relations Guest
+Guest --> UC13
+Guest --> UC14
+Guest --> UC15
+
+' Relations Système
+Système --> UC19
+Système --> UC20
+Système --> UC24
+Système --> UC25
+Système --> UC26
+
+@enduml

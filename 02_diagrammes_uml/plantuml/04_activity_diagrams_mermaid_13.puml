@@ -1,0 +1,36 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> ValidateQuote[Validation Devis]
+'     ValidateQuote --> CheckExpired[is_quote_expired(quote_id)]
+'     CheckExpired --> DecisionExpired{Expiré?}
+'     DecisionExpired -->|Oui| ErrorExpired[Erreur: devis expiré]
+'     ErrorExpired --> End
+'     
+'     DecisionExpired -->|Non| CheckStatus[can_validate_quote(quote_id)]
+'     CheckStatus --> DecisionStatus{Validable?}
+'     DecisionStatus -->|Non| ErrorStatus[Erreur: conditions non remplies]
+'     ErrorStatus --> End
+'     
+'     DecisionStatus -->|Oui| ValidateInvoice[Validation Facture]
+'     ValidateInvoice --> CheckInvoice[can_generate_invoice(travel_id)]
+'     CheckInvoice --> DecisionInvoice{Facture générable?}
+'     DecisionInvoice -->|Non| ErrorInvoice[Erreur: conditions non remplies]
+'     ErrorInvoice --> End
+'     
+'     DecisionInvoice -->|Oui| CheckContacts[are_all_parent_contacts_collected(travel_id)]
+'     CheckContacts --> DecisionContacts{Tous contacts collectés?}
+'     DecisionContacts -->|Non| ErrorContacts[Erreur: contacts manquants]
+'     ErrorContacts --> End
+'     
+'     DecisionContacts -->|Oui| CheckInvoiceValid[can_validate_invoice(invoice_id)]
+'     CheckInvoiceValid --> DecisionInvoiceValid{Facture validable?}
+'     DecisionInvoiceValid -->|Non| ErrorInvoiceValid[Erreur: facture non validable]
+'     ErrorInvoiceValid --> End
+'     
+'     DecisionInvoiceValid -->|Oui| Success[Validation réussie]
+'     Success --> End
+
+@enduml

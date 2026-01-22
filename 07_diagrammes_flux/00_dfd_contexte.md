@@ -7,7 +7,7 @@ Ce diagramme représente le système dans son contexte global et ses interaction
 ## Diagramme Mermaid
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph External["Entités Externes"]
         Prof[Professeur]
         Guest[Guest]

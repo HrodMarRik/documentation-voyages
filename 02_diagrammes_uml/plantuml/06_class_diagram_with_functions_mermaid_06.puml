@@ -1,0 +1,19 @@
+@startuml
+!theme plain
+
+class Invoice {
+    +int id
+    +int travel_id
+    +decimal total_amount
+    +decimal tax_amount
+}
+class TaxFunctions {
+    <<SQL Functions>>
+    +calculate_tax_amount(amount_ht, tax_rate)
+    +calculate_amount_ttc(amount_ht, tax_rate)
+    +get_invoice_total_ttc(invoice_id)
+}
+
+Invoice ..> TaxFunctions : utilise pour calculer TVA
+
+@enduml

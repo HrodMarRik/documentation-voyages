@@ -1,0 +1,24 @@
+@startuml
+!theme plain
+
+class Quote {
+    +int id
+    +int travel_id
+    +enum status
+    +decimal total_amount
+}
+class ValidationFunctions {
+    <<SQL Functions>>
+    +can_generate_quote(travel_id)
+    +can_validate_quote(quote_id)
+    +is_quote_expired(quote_id)
+}
+class GenerationFunctions {
+    <<SQL Functions>>
+    +generate_quote_number()
+}
+
+Quote ..> ValidationFunctions : utilise pour valider
+Quote ..> GenerationFunctions : utilise pour générer numéro
+
+@enduml

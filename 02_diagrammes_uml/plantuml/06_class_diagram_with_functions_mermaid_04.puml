@@ -1,0 +1,24 @@
+@startuml
+!theme plain
+
+class Travel {
+    +int id
+    +string name
+    +int number_participants
+    +decimal total_price
+}
+class PricingFunctions {
+    <<SQL Functions>>
+    +calculate_transport_price(travel_id, participants)
+    +calculate_activities_price(travel_id, participants)
+    +calculate_lodging_price(travel_id, participants)
+    +calculate_base_price(travel_id, participants)
+    +calculate_participant_discount(participants)
+    +is_early_bird(travel_id)
+    +calculate_final_travel_price(travel_id)
+}
+
+Travel ..> PricingFunctions : utilise pour calculer total_price
+PricingFunctions --> Travel : met à jour total_price
+
+@enduml

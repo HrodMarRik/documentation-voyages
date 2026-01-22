@@ -1,0 +1,35 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> GenerateQuote[Génération Devis]
+'     GenerateQuote --> CallProc[Appel: sp_generate_quote_for_travel()]
+'     
+'     CallProc --> Validate[can_generate_quote()]
+'     Validate --> DecisionValid{Validable?}
+'     DecisionValid -->|Non| Error[Erreur]
+'     Error --> End
+'     
+'     DecisionValid -->|Oui| GenNumber[generate_quote_number()]
+'     GenNumber --> CalcPrice[calculate_final_travel_price()]
+'     CalcPrice --> CreateQuote[Créer Quote + QuoteLines]
+'     CreateQuote --> UpdateStatus[UPDATE travels.status]
+'     UpdateStatus --> ReturnQuote[Retourner quote_id]
+'     ReturnQuote --> End
+'     
+'     Start2([Start]) --> GenerateInvoice[Génération Facture]
+'     GenerateInvoice --> CallProc2[Appel: sp_generate_invoice_from_quote()]
+'     
+'     CallProc2 --> Validate2[can_create_invoice_from_quote()]
+'     Validate2 --> DecisionValid2{Validable?}
+'     DecisionValid2 -->|Non| Error2[Erreur]
+'     Error2 --> End2
+'     
+'     DecisionValid2 -->|Oui| GenNumber2[generate_invoice_number()]
+'     GenNumber2 --> CalcTax[calculate_tax_amount()]
+'     CalcTax --> CreateInvoice[Créer Invoice + InvoiceLines]
+'     CreateInvoice --> ReturnInvoice[Retourner invoice_id]
+'     ReturnInvoice --> End2([End])
+
+@enduml

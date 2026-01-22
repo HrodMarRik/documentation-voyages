@@ -1,0 +1,63 @@
+@startuml
+!theme plain
+
+class Travel {
+    +int id
+    +enum status
+    +boolean parent_contacts_collected
+    +int number_participants
+}
+class Quote {
+    +int id
+    +int travel_id
+    +enum status
+    +datetime expires_at
+}
+class Invoice {
+    +int id
+    +int travel_id
+    +enum status
+    +datetime due_date
+}
+class Activity {
+    +int id
+    +int travel_id
+    +datetime date
+    +string start_time
+    +string end_time
+}
+class Booking {
+    +int id
+    +enum status
+    +enum payment_status
+    +datetime created_at
+}
+class ValidationFunctions {
+    <<SQL Functions>>
+    +can_generate_quote(travel_id) boolean
+    +can_validate_quote(quote_id) boolean
+    +can_generate_invoice(travel_id) boolean
+    +can_validate_invoice(invoice_id) boolean
+    +is_planning_valid(travel_id) boolean
+    +has_valid_planning(travel_id) boolean
+    +has_overlapping_activities(travel_id) boolean
+    +planning_covers_travel_days(travel_id) boolean
+    +has_available_spots(linguistic_travel_id) boolean
+    +can_create_booking(linguistic_travel_id) boolean
+    +is_payment_overdue(booking_id) boolean
+    +should_cancel_booking(booking_id) boolean
+    +are_all_parent_contacts_collected(travel_id) boolean
+}
+class ValidationService {
+    +validate_quote_generation(travel_id) boolean
+    +validate_invoice_generation(travel_id) boolean
+    +validate_planning(travel_id) boolean
+}
+Travel --> ValidationFunctions : utilise
+Quote --> ValidationFunctions : utilise
+Invoice --> ValidationFunctions : utilise
+Activity --> ValidationFunctions : utilise
+Booking --> ValidationFunctions : utilise
+ValidationService --> ValidationFunctions : appelle
+
+@enduml

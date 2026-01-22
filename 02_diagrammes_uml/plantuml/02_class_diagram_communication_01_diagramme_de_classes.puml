@@ -1,0 +1,52 @@
+@startuml
+!theme plain
+
+class Contact {
+    +int id
+    +int user_id
+    +boolean email_marketing_consent
+    +timestamp email_consent_date
+    +timestamp email_opt_in_date
+    +timestamp email_opt_out_date
+    +int email_bounce_count
+    +timestamp email_last_sent
+    +boolean whatsapp_consent
+    +timestamp whatsapp_consent_date
+    +timestamp whatsapp_opt_in_date
+    +timestamp whatsapp_opt_out_date
+    +boolean whatsapp_verified
+    +timestamp whatsapp_last_contact
+}
+class ContactHistory {
+    +int id
+    +int contact_id
+    +enum contact_type
+    +enum action
+    +json details
+}
+class CommunicationFunctions {
+    <<SQL Functions>>
+    +can_send_marketing_email(contact_id) boolean
+    +can_send_whatsapp(contact_id) boolean
+    +has_email_consent(contact_id) boolean
+    +has_whatsapp_consent(contact_id) boolean
+    +is_contact_opted_out_email(contact_id) boolean
+    +is_contact_opted_out_whatsapp(contact_id) boolean
+    +get_email_bounce_rate(contact_id) decimal
+    +days_since_last_email(contact_id) int
+    +days_since_last_whatsapp(contact_id) int
+    +get_contact_engagement_score(contact_id) int
+}
+class ContactService {
+    +check_email_consent(contact_id) boolean
+    +check_whatsapp_consent(contact_id) boolean
+    +send_marketing_email(contact_id) void
+    +send_whatsapp(contact_id) void
+    +get_engagement_score(contact_id) int
+}
+Contact --> ContactHistory : génère
+Contact --> CommunicationFunctions : utilise
+ContactService --> CommunicationFunctions : appelle
+ContactService --> Contact : modifie
+
+@enduml

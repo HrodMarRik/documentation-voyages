@@ -1,0 +1,38 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' sequenceDiagram
+'     participant SyncService as Service Sync
+'     participant DB as Base de Données
+'     participant Odoo as Odoo API
+'     
+'     SyncService->>DB: Récupérer données à synchroniser
+'     activate DB
+'     DB-->>SyncService: Invoices, Teachers, Guests
+'     deactivate DB
+'     
+'     loop Pour chaque entité
+'         SyncService->>Odoo: Créer/Mettre à jour entité
+'         activate Odoo
+'         
+'         alt Succès
+'             Odoo-->>SyncService: ID Odoo
+'             SyncService->>DB: Mettre à jour odoo_*_id
+'             activate DB
+'             DB-->>SyncService: Mis à jour
+'             deactivate DB
+'         else Erreur
+'             Odoo-->>SyncService: Erreur
+'             SyncService->>DB: Logger erreur
+'             activate DB
+'             DB-->>SyncService: Erreur loggée
+'             deactivate DB
+'         end
+'         
+'         deactivate Odoo
+'     end
+'     
+'     SyncService->>SyncService: Rapport de synchronisation
+
+@enduml

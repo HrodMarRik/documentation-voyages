@@ -1,0 +1,32 @@
+@startuml
+!theme plain
+
+actor Guest
+participant "Frontend" as Frontend
+participant "API Backend" as API
+participant "Service Paiement" as PaymentService
+participant "Stripe API" as Stripe
+participant "Base de Données" as DB
+
+Guest-->Frontend: S'inscrire voyage linguistique
+Frontend-->API: POST /api/guests<br/>(inscription data)
+API-->DB: Créer Guest + Booking
+DB--->API: Booking créé (status: PENDING)
+API-->PaymentService: create_payment_intent()
+PaymentService-->Stripe: Créer PaymentIntent
+Stripe--->PaymentService: client_secret
+PaymentService--->API: client_secret
+API--->Frontend: 201 Created (booking_id, client_secret)
+Frontend--->Guest: Redirection Stripe Checkout
+Guest-->Stripe: Paiement
+Stripe-->API: Webhook payment_intent.succeeded
+API-->DB: Mettre à jour Booking<br/>(status: CONFIRMED, payment_status: PAID)
+DB--->API: Mis à jour
+API-->PaymentService: Envoyer email confirmation
+PaymentService--->API: Email envoyé
+API--->Stripe: 200 OK
+Stripe--->Guest: Confirmation paiement
+Frontend-->API: GET /api/bookings/{id}
+API--->Frontend: Booking confirmé
+
+@enduml

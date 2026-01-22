@@ -1,0 +1,38 @@
+@startuml
+!theme plain
+
+actor Commercial
+participant "API Backend" as API
+participant "Base de Données" as DB
+participant "Fonctions Prix" as PricingFuncs
+participant "Fonctions Validation" as ValidationFuncs
+participant "Fonctions Génération" as GenerationFuncs
+
+Commercial-->API: POST /api/quotes/generate/{travel_id}
+API-->DB: SELECT can_generate_quote(:travel_id)
+DB-->ValidationFuncs: can_generate_quote()
+ValidationFuncs-->DB: Vérifier statut, destinations, participants
+DB--->ValidationFuncs: Données
+ValidationFuncs--->DB: TRUE
+DB--->API: Validation OK
+API-->DB: CALL sp_generate_quote_for_travel(:travel_id, @quote_id)
+DB-->GenerationFuncs: generate_quote_number()
+GenerationFuncs--->DB: "DEV-2025-0001"
+DB-->PricingFuncs: calculate_final_travel_price(travel_id)
+PricingFuncs-->PricingFuncs: calculate_transport_price()
+PricingFuncs-->PricingFuncs: calculate_activities_price()
+PricingFuncs-->PricingFuncs: calculate_lodging_price()
+PricingFuncs-->PricingFuncs: calculate_base_price()
+PricingFuncs-->PricingFuncs: calculate_participant_discount()
+PricingFuncs-->PricingFuncs: is_early_bird()
+PricingFuncs-->PricingFuncs: calculate_total_discount()
+PricingFuncs-->PricingFuncs: calculate_travel_price_with_discounts()
+PricingFuncs-->PricingFuncs: calculate_travel_price_with_margin()
+PricingFuncs--->DB: Prix final calculé
+DB-->DB: INSERT INTO quotes (...)
+DB-->DB: INSERT INTO quote_lines (...)
+DB-->DB: UPDATE travels SET status = 'quote_sent'
+DB--->API: Quote créé (quote_id)
+API--->Commercial: 201 Created (quote)
+
+@enduml

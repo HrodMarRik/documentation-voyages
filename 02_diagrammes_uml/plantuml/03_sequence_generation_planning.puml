@@ -1,0 +1,40 @@
+@startuml SequenceDiagram_GenerationPlanning
+!theme plain
+
+actor Commercial
+participant "API Backend" as API
+participant "Service Planning" as Planning
+participant "Base de Données" as DB
+
+Commercial -> API : POST /api/program-templates/generate\n(travel_id)
+activate API
+
+API -> DB : Récupérer Travel + Destinations
+activate DB
+DB --> API : Travel data
+deactivate DB
+
+API -> Planning : Générer planning préconstruit
+activate Planning
+Planning -> DB : Récupérer activités par destination
+activate DB
+DB --> Planning : Liste activités
+deactivate DB
+Planning -> Planning : Calculer jours\nDistribuer activités
+Planning --> API : ProgramTemplate créé
+deactivate Planning
+
+API -> DB : Sauvegarder ProgramTemplate
+activate DB
+DB --> API : Template sauvegardé
+deactivate DB
+
+API -> DB : Créer ProgramTemplateActivity\n(pour chaque activité)
+activate DB
+DB --> API : Activités liées
+deactivate DB
+
+API --> Commercial : 201 Created (program_template)
+deactivate API
+
+@enduml

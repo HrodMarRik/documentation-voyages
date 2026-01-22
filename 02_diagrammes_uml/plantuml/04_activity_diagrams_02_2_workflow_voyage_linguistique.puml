@@ -1,0 +1,28 @@
+@startuml
+!theme plain
+
+' NOTE: Conversion automatique depuis Mermaid
+' Type: unknown
+' Contenu Mermaid original:
+' flowchart TD
+'     Start([Start]) --> Consult[Guest consulte catalogue voyages]
+'     Consult --> Select[Guest sélectionne voyage]
+'     Select --> FillForm[Guest remplit formulaire inscription]
+'     FillForm --> Create[Créer Guest + Booking PENDING]
+'     Create --> Redirect[Redirection Stripe Checkout]
+'     Redirect --> Decision{Paiement réussi?}
+'     
+'     Decision -->|Oui| Webhook[Stripe webhook payment_intent.succeeded]
+'     Webhook --> Status1[Booking status → CONFIRMED]
+'     Status1 --> Payment[Booking payment_status → PAID]
+'     Payment --> Email[Envoi email confirmation]
+'     Email --> Sync[Synchronisation Odoo création contact]
+'     Sync --> TravelInProgress[Voyage en cours]
+'     TravelInProgress --> TravelEnd[Voyage terminé]
+'     TravelEnd --> End([End])
+'     
+'     Decision -->|Non| Status2[Booking status → CANCELLED]
+'     Status2 --> PaymentFailed[Booking payment_status → FAILED]
+'     PaymentFailed --> End
+
+@enduml

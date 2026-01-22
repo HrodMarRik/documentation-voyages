@@ -1,0 +1,21 @@
+@startuml
+!theme plain
+
+participant "Service Validation" as Service
+participant "Base de Données" as DB
+participant "Fonctions Validation" as ValidationFuncs
+
+Service-->DB: SELECT can_generate_quote(:travel_id)
+DB-->ValidationFuncs: can_generate_quote()
+ValidationFuncs-->DB: Vérifier statut voyage
+DB--->ValidationFuncs: Status = 'draft'
+ValidationFuncs-->DB: Vérifier destinations
+DB--->ValidationFuncs: Destinations existantes
+ValidationFuncs-->DB: Vérifier participants
+DB--->ValidationFuncs: Participants définis
+ValidationFuncs-->DB: Vérifier prix transport
+DB--->ValidationFuncs: Prix transport renseignés
+ValidationFuncs--->DB: TRUE (toutes conditions OK)
+DB--->Service: Validation OK
+
+@enduml

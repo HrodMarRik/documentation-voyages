@@ -1,0 +1,35 @@
+@startuml
+!theme plain
+
+' NOTE: Diagramme Mermaid - conversion manuelle nécessaire
+' flowchart TD
+'     Start([Start]) --> QuoteValidated[Devis validé]
+'     QuoteValidated --> Status[Travel status = QUOTE_VALIDATED]
+'     Status --> SendContacts[Professeur envoie contacts parents]
+'     SendContacts --> Confirm[Professeur confirme nombre exact participants]
+'     Confirm --> Decision{Nombre participants changé?}
+'     
+'     Decision -->|Oui| Recalculate[Recalculer devis transport]
+'     Recalculate --> Validate
+'     Decision -->|Non| Validate[Commercial valide dossier]
+'     
+'     Validate --> DossierValidated[Travel dossier_validated = True]
+'     DossierValidated --> GenerateInvoice[Commercial génère facture depuis devis]
+'     
+'     GenerateInvoice --> Conversion[Conversion Devis → Facture]
+'     Conversion --> GetLines[Récupérer QuoteLines]
+'     GetLines --> Convert[Convertir en InvoiceLines]
+'     Convert --> CalcTVA[Calculer TVA 20%]
+'     CalcTVA --> CreateInvoice[Créer Invoice]
+'     
+'     CreateInvoice --> ValidateInvoice[Commercial valide facture]
+'     ValidateInvoice --> InvoiceStatus[Invoice status → validated]
+'     InvoiceStatus --> Export[Export Factur-X XML]
+'     Export --> Store[Stockage document]
+'     Store --> SyncOdoo[Synchronisation Odoo]
+'     SyncOdoo --> CreateOdoo[Création facture Odoo]
+'     CreateOdoo --> SendInvoice[Envoi facture au professeur]
+'     SendInvoice --> Confirmed[Travel status → CONFIRMED]
+'     Confirmed --> End([End])
+
+@enduml
