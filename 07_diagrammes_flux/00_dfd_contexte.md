@@ -8,31 +8,31 @@ Ce diagramme représente le système dans son contexte global et ses interaction
 
 ```mermaid
 flowchart TB
-    subgraph External["Entités Externes"]
-        Prof[Professeur]
-        Guest[Guest]
-        Odoo[Odoo ERP]
-        Stripe[Stripe]
-        SMTP[SMTP Server]
-    end
-    
-    subgraph System["Système de Gestion de Voyages"]
-        App[Application]
-    end
-    
-    Prof -->|Demande voyage| App
-    App -->|Devis/Facture| Prof
-    
-    Guest -->|Inscription| App
-    App -->|Confirmation| Guest
-    
-    App -->|Synchronisation| Odoo
-    Odoo -->|Données| App
-    
-    App -->|Paiement| Stripe
-    Stripe -->|Webhook| App
-    
-    App -->|Emails| SMTP
+ subgraph External["Entités Externes"]
+ Prof[Professeur]
+ Guest[Guest]
+ Odoo[Odoo ERP]
+ Stripe[Stripe]
+ SMTP[SMTP Server]
+ end
+ 
+ subgraph System["Système de Gestion de Voyages"]
+ App[Application]
+ end
+ 
+ Prof -->|Demande voyage| App
+ App -->|Devis/Facture| Prof
+ 
+ Guest -->|Inscription| App
+ App -->|Confirmation| Guest
+ 
+ App -->|Synchronisation| Odoo
+ Odoo -->|Données| App
+ 
+ App -->|Paiement| Stripe
+ Stripe -->|Webhook| App
+ 
+ App -->|Emails| SMTP
 ```
 
 ## Flux Principaux

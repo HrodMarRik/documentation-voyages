@@ -76,7 +76,6 @@
 
 **RentalContract** : Contrat de location d'appartement
 
-
 **Rôle** : Groupe de permissions attribué à un utilisateur
 
 ## S

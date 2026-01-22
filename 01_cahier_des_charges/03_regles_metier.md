@@ -13,46 +13,46 @@ Prix Total = (Prix Transport + Prix Activités + Prix Hébergement) × Réductio
 #### Détail des Composants
 
 1. **Prix Transport**
-   ```
-   Prix Transport = Σ (TransportPrice.price_per_person × nombre_participants)
-   ```
-   - Pour chaque destination du voyage
-   - Prix par destination et date (table `transport_prices`)
-   - Multiplié par le nombre de participants
+ ```
+ Prix Transport = Σ (TransportPrice.price_per_person × nombre_participants)
+ ```
+ - Pour chaque destination du voyage
+ - Prix par destination et date (table `transport_prices`)
+ - Multiplié par le nombre de participants
 
 2. **Prix Activités**
-   ```
-   Prix Activités = Σ (Activity.price_per_person × nombre_participants)
-   ```
-   - Si le planning (ProgramTemplate) est validé
-   - Pour chaque activité du planning
-   - Prix par personne multiplié par le nombre de participants
+ ```
+ Prix Activités = Σ (Activity.price_per_person × nombre_participants)
+ ```
+ - Si le planning (ProgramTemplate) est validé
+ - Pour chaque activité du planning
+ - Prix par personne multiplié par le nombre de participants
 
 3. **Prix Hébergement**
-   ```
-   Prix Hébergement = lodging_price_per_person × nombre_participants × nombre_nuits
-   ```
-   - Si `lodging_price_per_person` est renseigné
-   - Nombre de nuits = (end_date - start_date).days
+ ```
+ Prix Hébergement = lodging_price_per_person × nombre_participants × nombre_nuits
+ ```
+ - Si `lodging_price_per_person` est renseigné
+ - Nombre de nuits = (end_date - start_date).days
 
 4. **Réductions**
 
-   Réductions selon nombre de participants :
-   - **≥ 30 participants** : 10% de réduction
-   - **≥ 20 participants** : 5% de réduction
-   - **≥ 10 participants** : 3% de réduction
-   
-   Réduction early bird :
-   - **Réservation > 3 mois à l'avance** : 5% de réduction supplémentaire
-   - Calcul : jours_avant_depart = (start_date - date_aujourd'hui).days
-   - Si jours_avant_depart > 90 : application de la réduction
+ Réductions selon nombre de participants :
+ - **≥ 30 participants** : 10% de réduction
+ - **≥ 20 participants** : 5% de réduction
+ - **≥ 10 participants** : 3% de réduction
+ 
+ Réduction early bird :
+ - **Réservation > 3 mois à l'avance** : 5% de réduction supplémentaire
+ - Calcul : jours_avant_depart = (start_date - date_aujourd'hui).days
+ - Si jours_avant_depart > 90 : application de la réduction
 
 5. **Marge**
-   ```
-   Prix Final = Prix Avant Réductions × (1 - réduction%) × (1 + marge%)
-   ```
-   - Si `margin_percent` est renseigné
-   - Application après les réductions
+ ```
+ Prix Final = Prix Avant Réductions × (1 - réduction%) × (1 + marge%)
+ ```
+ - Si `margin_percent` est renseigné
+ - Application après les réductions
 
 #### Exemple de Calcul
 
@@ -103,8 +103,8 @@ Un devis ne peut être validé que si :
 
 ```
 DRAFT → SENT → VALIDATED
-         ↓
-      REJECTED
+ ↓
+ REJECTED
 ```
 
 ### Factures
@@ -126,8 +126,8 @@ Une facture ne peut être validée que par :
 
 ```
 DRAFT → VALIDATED → PAID
-        ↓
-     CANCELLED
+ ↓
+ CANCELLED
 ```
 
 ### Plannings
@@ -153,8 +153,8 @@ Un planning (ProgramTemplate) peut être validé si :
 
 ```
 Booking créé (PENDING) → Paiement Stripe → 
-  Succès → CONFIRMED + PAID
-  Échec → CANCELLED + FAILED
+ Succès → CONFIRMED + PAID
+ Échec → CANCELLED + FAILED
 ```
 
 ## Règles de Synchronisation Odoo
@@ -187,51 +187,51 @@ Booking créé (PENDING) → Paiement Stripe →
 ### Identifiants Odoo
 
 - Chaque entité locale stocke son identifiant Odoo :
-  - `odoo_partner_id` : Pour Teacher, Guest
-  - `odoo_lead_id` : Pour Travel
-  - `odoo_quote_id` : Pour Quote
-  - `odoo_invoice_id` : Pour Invoice
+ - `odoo_partner_id` : Pour Teacher, Guest
+ - `odoo_lead_id` : Pour Travel
+ - `odoo_quote_id` : Pour Quote
+ - `odoo_invoice_id` : Pour Invoice
 
 ## Règles de Sécurité
 
 ### Authentification
 
 - **JWT Tokens** :
-  - Access token : Expiration 15 minutes
-  - Refresh token : Expiration 7 jours
-  - Rotation automatique des tokens
+ - Access token : Expiration 15 minutes
+ - Refresh token : Expiration 7 jours
+ - Rotation automatique des tokens
 
 - **2FA** :
-  - Obligatoire pour les utilisateurs Admin
-  - Optionnel pour les autres rôles
-  - TOTP (Time-based One-Time Password)
-  - Codes de récupération en cas de perte
+ - Obligatoire pour les utilisateurs Admin
+ - Optionnel pour les autres rôles
+ - TOTP (Time-based One-Time Password)
+ - Codes de récupération en cas de perte
 
 ### Autorisation
 
 - **Vérification des permissions** :
-  - Sur chaque endpoint API
-  - Basée sur les rôles et permissions de l'utilisateur
-  - Logs d'audit pour les accès refusés
+ - Sur chaque endpoint API
+ - Basée sur les rôles et permissions de l'utilisateur
+ - Logs d'audit pour les accès refusés
 
 - **Rôles prédéfinis** :
-  - **Admin** : Tous les droits
-  - **Commercial** : Gestion voyages, devis, factures
-  - **Comptable** : Validation factures, export comptable
-  - **Professeur** : Consultation devis/factures, envoi contacts
-  - **Guest** : Inscription voyages linguistiques
+ - **Admin** : Tous les droits
+ - **Commercial** : Gestion voyages, devis, factures
+ - **Comptable** : Validation factures, export comptable
+ - **Professeur** : Consultation devis/factures, envoi contacts
+ - **Guest** : Inscription voyages linguistiques
 
 ### Audit Trail
 
 - **Actions tracées** :
-  - Création, modification, suppression d'entités
-  - Changements de statut
-  - Validations (devis, factures)
-  - Connexions utilisateurs
+ - Création, modification, suppression d'entités
+ - Changements de statut
+ - Validations (devis, factures)
+ - Connexions utilisateurs
 
 - **Stockage** :
-  - Table `travel_status_history` pour les changements de statut
-  - Logs système pour les autres actions
+ - Table `travel_status_history` pour les changements de statut
+ - Logs système pour les autres actions
 
 ## Règles de Données
 
@@ -239,22 +239,22 @@ Booking créé (PENDING) → Paiement Stripe →
 
 - **Clés étrangères** : Toutes les relations sont contraintes
 - **Unicité** : 
-  - Email unique pour User, Teacher, Guest
-  - Numéro unique pour Quote, Invoice
-  - Token unique pour TeacherForm
+ - Email unique pour User, Teacher, Guest
+ - Numéro unique pour Quote, Invoice
+ - Token unique pour TeacherForm
 
 ### Validation des Données
 
 - **Email** : Format valide requis
 - **Dates** : 
-  - Date de fin > date de début
-  - Dates de voyage dans le futur
+ - Date de fin > date de début
+ - Dates de voyage dans le futur
 - **Prix** : 
-  - Tous les prix doivent être ≥ 0
-  - Loyer mensuel > 0
+ - Tous les prix doivent être ≥ 0
+ - Loyer mensuel > 0
 - **Participants** : 
-  - Nombre de participants > 0
-  - max_participants ≥ min_participants
+ - Nombre de participants > 0
+ - max_participants ≥ min_participants
 
 ### Données Optionnelles vs Obligatoires
 

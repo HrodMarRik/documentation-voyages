@@ -27,24 +27,24 @@
 ### Authentification
 
 - **JWT Tokens** :
-  - Access token : Expiration 15 minutes
-  - Refresh token : Expiration 7 jours
-  - Rotation automatique des tokens
-  - Révocation possible
+ - Access token : Expiration 15 minutes
+ - Refresh token : Expiration 7 jours
+ - Rotation automatique des tokens
+ - Révocation possible
 
 - **2FA (Two-Factor Authentication)** :
-  - Obligatoire pour les utilisateurs Admin
-  - Optionnel pour les autres rôles
-  - TOTP (Time-based One-Time Password)
-  - Codes de récupération en cas de perte
+ - Obligatoire pour les utilisateurs Admin
+ - Optionnel pour les autres rôles
+ - TOTP (Time-based One-Time Password)
+ - Codes de récupération en cas de perte
 
 ### Chiffrement
 
 - **En transit** : TLS 1.3 obligatoire
 - **Au repos** : 
-  - Mots de passe : Hash bcrypt avec salt
-  - Secrets 2FA : Chiffrement AES-256
-  - Données sensibles : Chiffrement optionnel
+ - Mots de passe : Hash bcrypt avec salt
+ - Secrets 2FA : Chiffrement AES-256
+ - Données sensibles : Chiffrement optionnel
 
 ### Autorisation
 

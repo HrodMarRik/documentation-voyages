@@ -18,9 +18,9 @@ Ce diagramme présente les classes et fonctions SQL du domaine des calculs de pr
 
 ```python
 class PricingService:
-    def calculate_price(self, travel_id: int) -> Decimal:
-        # Appel direct à la fonction SQL
-        return db.execute(
-            text("SELECT calculate_final_travel_price(:travel_id)"),
-            {"travel_id": travel_id}
-        ).scalar()
+ def calculate_price(self, travel_id: int) -> Decimal:
+ # Appel direct à la fonction SQL
+ return db.execute(
+ text("SELECT calculate_final_travel_price(:travel_id)"),
+ {"travel_id": travel_id}
+ ).scalar()

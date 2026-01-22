@@ -9,11 +9,11 @@ Cette documentation présente un système intégré de gestion de voyages avec i
 
 ## Organisation par Phase
 
-> 📋 **Voir [Organisation par Phase](00_organisation_par_phase.md) pour savoir quels documents sont pertinents selon la phase du projet (Conception / Implémentation / Tests / Déploiement)**
+> **Voir [Organisation par Phase](00_organisation_par_phase.md) pour savoir quels documents sont pertinents selon la phase du projet (Conception / Implémentation / Tests / Déploiement)**
 
 ## Structure de la Documentation
 
-### Phase de CONCEPTION (Phase Actuelle) ✅
+### Phase de CONCEPTION (Phase Actuelle) 
 
 ### 01_cahier_des_charges/
 - **01_executif.md** : Vue d'ensemble exécutive du système
@@ -36,9 +36,9 @@ Cette documentation présente un système intégré de gestion de voyages avec i
 - **04_dictionnaire_donnees.md** : Dictionnaire des données
 
 #### 04_diagrammes_architecture/
-- **01_architecture_systeme.md** : Vue globale du système (Mermaid) ✅
-- **02_architecture_application.md** : Architecture applicative (Mermaid) ✅
-- **03_architecture_deploiement.md** : Architecture de déploiement (Mermaid) ⏳ Plus tard
+- **01_architecture_systeme.md** : Vue globale du système (Mermaid) 
+- **02_architecture_application.md** : Architecture applicative (Mermaid) 
+- **03_architecture_deploiement.md** : Architecture de déploiement (Mermaid) - Plus tard
 
 #### 05_diagrammes_workflow/
 - **01_workflow_voyages_scolaires.md** : Workflow complet voyages scolaires (Mermaid)
@@ -48,22 +48,22 @@ Cette documentation présente un système intégré de gestion de voyages avec i
 - **06_workflow_facturation.md** : Workflow facturation (Mermaid)
 
 #### 06_diagrammes_bpmn/
-- Processus métier en notation BPMN ✅
+- Processus métier en notation BPMN 
 
 #### 07_diagrammes_flux/
-- Diagrammes de flux de données ✅
+- Diagrammes de flux de données 
 
 #### 14_schemas_base_donnees/
-- **01_schema_complet.sql** : Schéma SQL complet MySQL ✅
+- **01_schema_complet.sql** : Schéma SQL complet MySQL 
 
 #### 15_glossaire_et_references/
-- Glossaire des termes techniques ✅
-- Acronymes ✅
+- Glossaire des termes techniques 
+- Acronymes 
 
 #### 09_documentation_technique/
-- **03_plan_gantt_projet.md** : Plan temporel complet (Gantt) ✅ Peut être fait maintenant
+- **03_plan_gantt_projet.md** : Plan temporel complet (Gantt) Peut être fait maintenant
 
-> 📁 **Documents d'implémentation déplacés** : Les guides d'installation, développement, API, intégrations techniques, tests, guides utilisateur et optimisations SQL ont été déplacés dans `_a_venir/` (voir [Organisation par Phase](00_organisation_par_phase.md))
+> **Documents d'implémentation déplacés** : Les guides d'installation, développement, API, intégrations techniques, tests, guides utilisateur et optimisations SQL ont été déplacés dans `_a_venir/` (voir [Organisation par Phase](00_organisation_par_phase.md))
 
 ## Technologies Utilisées
 
@@ -85,7 +85,7 @@ Cette documentation présente un système intégré de gestion de voyages avec i
 5. **Organisation** : [Voir organisation par phase](00_organisation_par_phase.md)
 
 ### Pour l'Implémentation (Plus Tard)
-> 📁 Les documents d'implémentation sont dans `_a_venir/` (ignoré par Git)
+> Les documents d'implémentation sont dans `_a_venir/` (ignoré par Git)
 
 ## Visualisation des Diagrammes
 

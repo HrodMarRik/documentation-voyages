@@ -6,7 +6,7 @@
 
 **Description** : Le système dépend de services externes (Odoo, Stripe, SMTP)
 
-**Probabilité** : Moyenne  
+**Probabilité** : Moyenne 
 **Impact** : Élevé
 
 **Conséquences** :
@@ -29,7 +29,7 @@
 
 **Description** : Les intégrations avec Odoo sont complexes et peuvent échouer
 
-**Probabilité** : Moyenne  
+**Probabilité** : Moyenne 
 **Impact** : Moyen
 
 **Conséquences** :
@@ -47,7 +47,7 @@
 
 **Description** : Le système peut ralentir avec un grand nombre d'utilisateurs simultanés
 
-**Probabilité** : Faible  
+**Probabilité** : Faible 
 **Impact** : Moyen
 
 **Conséquences** :
@@ -65,7 +65,7 @@
 
 **Description** : Corruption de données, perte de données, problèmes de performance
 
-**Probabilité** : Faible  
+**Probabilité** : Faible 
 **Impact** : Critique
 
 **Conséquences** :
@@ -85,7 +85,7 @@
 
 **Description** : Suppression accidentelle ou corruption de données importantes
 
-**Probabilité** : Faible  
+**Probabilité** : Faible 
 **Impact** : Critique
 
 **Conséquences** :
@@ -107,7 +107,7 @@
 
 **Description** : Erreurs dans les formules de calcul de prix
 
-**Probabilité** : Faible  
+**Probabilité** : Faible 
 **Impact** : Élevé
 
 **Conséquences** :
@@ -125,7 +125,7 @@
 
 **Description** : Paiements Stripe non enregistrés dans le système
 
-**Probabilité** : Faible  
+**Probabilité** : Faible 
 **Impact** : Élevé
 
 **Conséquences** :
@@ -145,7 +145,7 @@
 
 **Description** : Vulnérabilités dans les dépendances ou le code
 
-**Probabilité** : Moyenne  
+**Probabilité** : Moyenne 
 **Impact** : Critique
 
 **Conséquences** :
@@ -163,7 +163,7 @@
 
 **Description** : Accès au système par des utilisateurs non autorisés
 
-**Probabilité** : Faible  
+**Probabilité** : Faible 
 **Impact** : Critique
 
 **Conséquences** :
@@ -181,7 +181,7 @@
 
 **Description** : Exposition de données personnelles
 
-**Probabilité** : Faible  
+**Probabilité** : Faible 
 **Impact** : Critique
 
 **Conséquences** :

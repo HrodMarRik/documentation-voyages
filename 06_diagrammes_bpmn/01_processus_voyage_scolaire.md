@@ -8,32 +8,32 @@ Ce diagramme BPMN représente le processus complet de gestion d'un voyage scolai
 
 ```mermaid
 flowchart TD
-    Start([Début]) --> FillForm[Professeur remplit formulaire]
-    FillForm --> CreateTravel[Système crée Travel DRAFT]
-    CreateTravel --> NotifyCommercial[Notification commercial]
-    
-    NotifyCommercial --> GeneratePlanning[Commercial génère planning]
-    GeneratePlanning --> ValidatePlanning{Planning validé?}
-    ValidatePlanning -->|Non| ModifyPlanning[Modifier planning]
-    ModifyPlanning --> ValidatePlanning
-    ValidatePlanning -->|Oui| EnterTransport[Saisir prix transport]
-    
-    EnterTransport --> GenerateQuote[Générer devis]
-    GenerateQuote --> SendQuote[Envoyer devis]
-    SendQuote --> WaitResponse[Attendre réponse professeur]
-    
-    WaitResponse --> Decision{Devis accepté?}
-    Decision -->|Non| Cancel[Annuler voyage]
-    Decision -->|Oui| ValidateQuote[Valider devis]
-    
-    ValidateQuote --> CollectContacts[Collecter contacts parents]
-    CollectContacts --> ValidateDossier[Valider dossier]
-    ValidateDossier --> GenerateInvoice[Générer facture]
-    GenerateInvoice --> ValidateInvoice[Valider facture]
-    ValidateInvoice --> SyncOdoo[Synchroniser Odoo]
-    SyncOdoo --> End([Fin])
-    
-    Cancel --> End
+ Start([Début]) --> FillForm[Professeur remplit formulaire]
+ FillForm --> CreateTravel[Système crée Travel DRAFT]
+ CreateTravel --> NotifyCommercial[Notification commercial]
+ 
+ NotifyCommercial --> GeneratePlanning[Commercial génère planning]
+ GeneratePlanning --> ValidatePlanning{Planning validé?}
+ ValidatePlanning -->|Non| ModifyPlanning[Modifier planning]
+ ModifyPlanning --> ValidatePlanning
+ ValidatePlanning -->|Oui| EnterTransport[Saisir prix transport]
+ 
+ EnterTransport --> GenerateQuote[Générer devis]
+ GenerateQuote --> SendQuote[Envoyer devis]
+ SendQuote --> WaitResponse[Attendre réponse professeur]
+ 
+ WaitResponse --> Decision{Devis accepté?}
+ Decision -->|Non| Cancel[Annuler voyage]
+ Decision -->|Oui| ValidateQuote[Valider devis]
+ 
+ ValidateQuote --> CollectContacts[Collecter contacts parents]
+ CollectContacts --> ValidateDossier[Valider dossier]
+ ValidateDossier --> GenerateInvoice[Générer facture]
+ GenerateInvoice --> ValidateInvoice[Valider facture]
+ ValidateInvoice --> SyncOdoo[Synchroniser Odoo]
+ SyncOdoo --> End([Fin])
+ 
+ Cancel --> End
 ```
 
 ## Étapes du Processus

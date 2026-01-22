@@ -105,7 +105,7 @@ Ce document présente un système intégré de gestion qui combine deux domaines
 
 - **Réduction de 70%** du temps de création de devis (automatisation)
 - **Élimination des erreurs** de calcul manuel
-- **Synchronisation automatique** avec Odoo (plus de saisie double)
+- **Synchronisation automatique** avec Odoo
 
 ### Amélioration de la Qualité
 
@@ -125,9 +125,9 @@ Ce document présente un système intégré de gestion qui combine deux domaines
 - **Migrations** : Alembic
 - **Authentification** : JWT + 2FA (TOTP via pyotp)
 - **Intégrations** : 
-  - Odoo (XML-RPC)
-  - Stripe (API REST)
-  - SMTP (emails transactionnels)
+ - Odoo (XML-RPC)
+ - Stripe (API REST)
+ - SMTP (emails transactionnels)
 
 ### Architecture en Couches
 

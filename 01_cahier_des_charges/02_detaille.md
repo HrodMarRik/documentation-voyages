@@ -25,19 +25,19 @@
 
 **Fonctionnalités** :
 - **Formulaire accessible sans authentification**
-  - Dates souhaitées
-  - Destinations souhaitées (multiples)
-  - Budget approximatif
-  - Nombre approximatif de participants
-  - Informations du professeur (nom, email, téléphone, école)
-  
+ - Dates souhaitées
+ - Destinations souhaitées (multiples)
+ - Budget approximatif
+ - Nombre approximatif de participants
+ - Informations du professeur (nom, email, téléphone, école)
+ 
 - **Traitement du formulaire**
-  - Création automatique d'un Teacher (si nouveau)
-  - Création d'un Travel en statut DRAFT
-  - Création des TravelDestination
-  - Génération d'un token unique
-  - Envoi d'un email au professeur avec lien de suivi
-  - Notification aux commerciaux (nouveau prospect)
+ - Création automatique d'un Teacher (si nouveau)
+ - Création d'un Travel en statut DRAFT
+ - Création des TravelDestination
+ - Génération d'un token unique
+ - Envoi d'un email au professeur avec lien de suivi
+ - Notification aux commerciaux (nouveau prospect)
 
 **Règles métier** :
 - L'email du professeur doit être valide
@@ -48,19 +48,19 @@
 
 **Fonctionnalités** :
 - **Génération automatique préconstruite**
-  - Basée sur les destinations du voyage
-  - Utilisation des activités disponibles par destination
-  - Répartition sur les jours du voyage
-  - Ordre logique des activités
-  
+ - Basée sur les destinations du voyage
+ - Utilisation des activités disponibles par destination
+ - Répartition sur les jours du voyage
+ - Ordre logique des activités
+ 
 - **Modification manuelle**
-  - Ajout/suppression d'activités
-  - Modification des horaires
-  - Réorganisation des activités
-  
+ - Ajout/suppression d'activités
+ - Modification des horaires
+ - Réorganisation des activités
+ 
 - **Validation du planning**
-  - Validation par le commercial
-  - Le planning validé est utilisé pour le calcul du devis
+ - Validation par le commercial
+ - Le planning validé est utilisé pour le calcul du devis
 
 **Règles métier** :
 - Un planning doit avoir au moins une activité
@@ -71,72 +71,72 @@
 
 **Fonctionnalités** :
 - **Calcul automatique du prix**
-  - Transport : Prix par destination et date (TransportPrice × nombre participants)
-  - Activités : Si planning validé, somme des prix des activités × participants
-  - Hébergement : Si renseigné, prix par personne × participants × nombre de nuits
-  - Marge : Si renseignée, application d'une marge en pourcentage
-  
+ - Transport : Prix par destination et date (TransportPrice × nombre participants)
+ - Activités : Si planning validé, somme des prix des activités × participants
+ - Hébergement : Si renseigné, prix par personne × participants × nombre de nuits
+ - Marge : Si renseignée, application d'une marge en pourcentage
+ 
 - **Création du devis**
-  - Numéro de devis unique
-  - Lignes de devis détaillées (transport, activités, hébergement)
-  - Total HT et TTC
-  - Date d'expiration (optionnelle)
-  
+ - Numéro de devis unique
+ - Lignes de devis détaillées (transport, activités, hébergement)
+ - Total HT et TTC
+ - Date d'expiration (optionnelle)
+ 
 - **Envoi du devis**
-  - Envoi par email au professeur
-  - Lien de consultation dans l'email
-  - Statut du voyage → QUOTE_SENT
+ - Envoi par email au professeur
+ - Lien de consultation dans l'email
+ - Statut du voyage → QUOTE_SENT
 
 **Règles métier** :
 - Un devis ne peut être généré que si :
-  - Le voyage a au moins une destination
-  - Le nombre de participants est défini (ou min/max)
-  - Les prix de transport sont renseignés pour les dates
+ - Le voyage a au moins une destination
+ - Le nombre de participants est défini (ou min/max)
+ - Les prix de transport sont renseignés pour les dates
 - Le total du devis = somme des lignes
 - Les réductions sont appliquées selon le nombre de participants :
-  - ≥ 30 participants : 10% de réduction
-  - ≥ 20 participants : 5% de réduction
-  - ≥ 10 participants : 3% de réduction
+ - ≥ 30 participants : 10% de réduction
+ - ≥ 20 participants : 5% de réduction
+ - ≥ 10 participants : 3% de réduction
 - Early bird : 5% de réduction si réservation > 3 mois à l'avance
 
 ##### 1.1.4 Validation et Facturation
 
 **Fonctionnalités** :
 - **Validation du devis**
-  - Acceptation par le professeur (via lien email)
-  - Validation par le commercial
-  - Statut du voyage → QUOTE_VALIDATED
-  
+ - Acceptation par le professeur (via lien email)
+ - Validation par le commercial
+ - Statut du voyage → QUOTE_VALIDATED
+ 
 - **Collecte des contacts parents**
-  - Interface pour le professeur
-  - Ajout des contacts parents (nom, email, téléphone, nom de l'élève)
-  - Confirmation du nombre exact de participants
-  
+ - Interface pour le professeur
+ - Ajout des contacts parents (nom, email, téléphone, nom de l'élève)
+ - Confirmation du nombre exact de participants
+ 
 - **Validation du dossier**
-  - Vérification que tous les contacts parents sont collectés
-  - Vérification du nombre exact de participants
-  - Recalcul du devis si nombre de participants changé
-  - Validation par le commercial
-  - Statut dossier_validated = True
-  
+ - Vérification que tous les contacts parents sont collectés
+ - Vérification du nombre exact de participants
+ - Recalcul du devis si nombre de participants changé
+ - Validation par le commercial
+ - Statut dossier_validated = True
+ 
 - **Génération de la facture**
-  - Depuis le devis validé
-  - Conversion des lignes de devis en lignes de facture
-  - Calcul de la TVA (20% par défaut)
-  - Numéro de facture unique
-  - Statut du voyage → CONFIRMED
-  
+ - Depuis le devis validé
+ - Conversion des lignes de devis en lignes de facture
+ - Calcul de la TVA (20% par défaut)
+ - Numéro de facture unique
+ - Statut du voyage → CONFIRMED
+ 
 - **Validation de la facture**
-  - Validation par le commercial ou comptable
-  - Export Factur-X (XML)
-  - Envoi par email au professeur
-  - Synchronisation avec Odoo
+ - Validation par le commercial ou comptable
+ - Export Factur-X (XML)
+ - Envoi par email au professeur
+ - Synchronisation avec Odoo
 
 **Règles métier** :
 - Une facture ne peut être générée que si :
-  - Le devis est validé
-  - Le dossier est validé (dossier_validated = True)
-  - Le nombre exact de participants est connu
+ - Le devis est validé
+ - Le dossier est validé (dossier_validated = True)
+ - Le nombre exact de participants est connu
 - La facture reprend les montants du devis validé
 - La TVA est calculée sur le total HT
 
@@ -150,16 +150,16 @@
 
 **Fonctionnalités** :
 - **Création par le commercial**
-  - Titre, description
-  - Destination
-  - Dates (début et fin)
-  - Prix par personne
-  - Nombre maximum de participants
-  - Statut (publié, brouillon)
-  
+ - Titre, description
+ - Destination
+ - Dates (début et fin)
+ - Prix par personne
+ - Nombre maximum de participants
+ - Statut (publié, brouillon)
+ 
 - **Publication**
-  - Le voyage publié est visible sur le site public
-  - Les invités peuvent s'inscrire
+ - Le voyage publié est visible sur le site public
+ - Les invités peuvent s'inscrire
 
 **Règles métier** :
 - Les dates doivent être dans le futur
@@ -170,29 +170,29 @@
 
 **Fonctionnalités** :
 - **Formulaire d'inscription public**
-  - Informations du participant (nom, prénom, email, téléphone, âge)
-  - Sélection du voyage
-  - Acceptation des conditions générales
-  
+ - Informations du participant (nom, prénom, email, téléphone, âge)
+ - Sélection du voyage
+ - Acceptation des conditions générales
+ 
 - **Création de la réservation**
-  - Création d'un Guest (si nouveau)
-  - Création d'une Booking
-  - Statut PENDING (en attente de paiement)
-  
+ - Création d'un Guest (si nouveau)
+ - Création d'une Booking
+ - Statut PENDING (en attente de paiement)
+ 
 - **Paiement en ligne**
-  - Redirection vers Stripe Checkout
-  - Paiement sécurisé
-  - Webhook Stripe pour confirmation
-  
+ - Redirection vers Stripe Checkout
+ - Paiement sécurisé
+ - Webhook Stripe pour confirmation
+ 
 - **Confirmation**
-  - Mise à jour du statut de la Booking → CONFIRMED
-  - Envoi d'un email de confirmation
-  - Synchronisation avec Odoo (création contact)
+ - Mise à jour du statut de la Booking → CONFIRMED
+ - Envoi d'un email de confirmation
+ - Synchronisation avec Odoo (création contact)
 
 **Règles métier** :
 - Une réservation ne peut être créée que si :
-  - Le voyage est publié
-  - Il reste des places disponibles
+ - Le voyage est publié
+ - Il reste des places disponibles
 - Le paiement doit être effectué dans les 24h
 - Après paiement, la réservation est confirmée
 
@@ -204,26 +204,26 @@
 
 **Fonctionnalités** :
 - **CRUD Destinations**
-  - Nom, pays, ville
-  - Description
-  - Images (JSON array)
-  - Prix de base
-  - Statut (actif, inactif)
-  
+ - Nom, pays, ville
+ - Description
+ - Images (JSON array)
+ - Prix de base
+ - Statut (actif, inactif)
+ 
 - **CRUD Activités**
-  - Nom, description
-  - Destination associée
-  - Prix par personne
-  - Durée (en heures)
-  - Type d'activité
-  - Localisation
-  - Réutilisable (template)
-  
+ - Nom, description
+ - Destination associée
+ - Prix par personne
+ - Durée (en heures)
+ - Type d'activité
+ - Localisation
+ - Réutilisable (template)
+ 
 - **Programmes préconstruits**
-  - Combinaison destination + activités
-  - Ordre des activités
-  - Prix par jour
-  - Repas inclus (optionnel)
+ - Combinaison destination + activités
+ - Ordre des activités
+ - Prix par jour
+ - Repas inclus (optionnel)
 
 **Règles métier** :
 - Une activité doit être associée à une destination
@@ -240,16 +240,16 @@
 
 **Fonctionnalités** :
 - **Création de contact dans Odoo**
-  - Lors de la création d'un Teacher
-  - Lors de l'inscription d'un Guest
-  
+ - Lors de la création d'un Teacher
+ - Lors de l'inscription d'un Guest
+ 
 - **Mise à jour de contact**
-  - Synchronisation des modifications
-  - Gestion des conflits (dernière modification gagne)
-  
+ - Synchronisation des modifications
+ - Gestion des conflits (dernière modification gagne)
+ 
 - **Récupération depuis Odoo**
-  - Import de contacts existants
-  - Mise à jour des données locales
+ - Import de contacts existants
+ - Mise à jour des données locales
 
 **Règles métier** :
 - Un contact Odoo est identifié par `odoo_partner_id`
@@ -264,15 +264,15 @@
 
 **Fonctionnalités** :
 - **Création de lead**
-  - Lors de la soumission du formulaire professeur
-  - Lead avec toutes les informations du voyage
-  - Statut "Nouveau"
-  - Attribution au commercial responsable
-  
+ - Lors de la soumission du formulaire professeur
+ - Lead avec toutes les informations du voyage
+ - Statut "Nouveau"
+ - Attribution au commercial responsable
+ 
 - **Mise à jour du lead**
-  - Lors de la validation du devis
-  - Lors de la génération de la facture
-  - Conversion en opportunité
+ - Lors de la validation du devis
+ - Lors de la génération de la facture
+ - Conversion en opportunité
 
 **Règles métier** :
 - Un lead est créé pour chaque nouveau voyage scolaire
@@ -286,18 +286,18 @@
 
 **Fonctionnalités** :
 - **Création de facture Odoo**
-  - Lors de la validation d'une facture dans le système
-  - Facture avec toutes les lignes
-  - Lien avec le contact client
-  - Numéro de facture synchronisé
-  
+ - Lors de la validation d'une facture dans le système
+ - Facture avec toutes les lignes
+ - Lien avec le contact client
+ - Numéro de facture synchronisé
+ 
 - **Validation dans Odoo**
-  - La facture est créée en brouillon
-  - Validation manuelle dans Odoo (optionnelle)
-  
+ - La facture est créée en brouillon
+ - Validation manuelle dans Odoo (optionnelle)
+ 
 - **Export comptable**
-  - Export des écritures comptables
-  - Conformité avec la comptabilité Odoo
+ - Export des écritures comptables
+ - Conformité avec la comptabilité Odoo
 
 **Règles métier** :
 - Une facture Odoo est créée pour chaque facture validée
@@ -313,26 +313,26 @@
 
 **Fonctionnalités** :
 - **Authentification JWT**
-  - Login avec email/password
-  - Génération de tokens (access + refresh)
-  - Expiration des tokens (15 min access, 7 jours refresh)
-  
+ - Login avec email/password
+ - Génération de tokens (access + refresh)
+ - Expiration des tokens (15 min access, 7 jours refresh)
+ 
 - **2FA (Two-Factor Authentication)**
-  - Activation optionnelle
-  - TOTP (Time-based One-Time Password)
-  - QR code pour configuration
-  - Codes de récupération
-  
+ - Activation optionnelle
+ - TOTP (Time-based One-Time Password)
+ - QR code pour configuration
+ - Codes de récupération
+ 
 - **Gestion des rôles**
-  - Rôles prédéfinis (Admin, Commercial, Comptable)
-  - Rôles personnalisés
-  - Attribution de rôles aux utilisateurs
-  
+ - Rôles prédéfinis (Admin, Commercial, Comptable)
+ - Rôles personnalisés
+ - Attribution de rôles aux utilisateurs
+ 
 - **Gestion des permissions**
-  - Permissions granulaires par ressource
-  - Permissions par rôle
-  - Permissions directes par utilisateur
-  - Vérification des permissions sur chaque endpoint
+ - Permissions granulaires par ressource
+ - Permissions par rôle
+ - Permissions directes par utilisateur
+ - Vérification des permissions sur chaque endpoint
 
 **Règles métier** :
 - Un utilisateur doit avoir au moins un rôle
@@ -347,20 +347,20 @@
 
 **Fonctionnalités** :
 - **CRUD générique**
-  - Accès à toutes les tables de la base de données
-  - Édition en ligne (AJAX)
-  - Filtres et recherche
-  - Export des données
-  
+ - Accès à toutes les tables de la base de données
+ - Édition en ligne (AJAX)
+ - Filtres et recherche
+ - Export des données
+ 
 - **Gestion des utilisateurs**
-  - Création, modification, suppression
-  - Attribution de rôles
-  - Activation/désactivation
-  
+ - Création, modification, suppression
+ - Attribution de rôles
+ - Activation/désactivation
+ 
 - **Monitoring**
-  - Statistiques d'utilisation
-  - Logs des actions
-  - État du système
+ - Statistiques d'utilisation
+ - Logs des actions
+ - État du système
 
 ---
 
@@ -376,10 +376,10 @@
 4. **Prix hébergement** = Prix par personne × nombre participants × nombre de nuits
 5. **Total avant réductions** = Prix de base + Prix activités + Prix transport + Prix hébergement
 6. **Réductions** :
-   - ≥ 30 participants : -10%
-   - ≥ 20 participants : -5%
-   - ≥ 10 participants : -3%
-   - Early bird (> 3 mois) : -5%
+ - ≥ 30 participants : -10%
+ - ≥ 20 participants : -5%
+ - ≥ 10 participants : -3%
+ - Early bird (> 3 mois) : -5%
 7. **Marge** : Si renseignée, application après réductions
 8. **Total final** = (Total avant réductions × (1 - réduction)) × (1 + marge%)
 
@@ -388,18 +388,18 @@
 #### Devis
 
 - Un devis ne peut être généré que si :
-  - Le voyage a au moins une destination
-  - Le nombre de participants est défini
-  - Les prix de transport sont renseignés
+ - Le voyage a au moins une destination
+ - Le nombre de participants est défini
+ - Les prix de transport sont renseignés
 - Un devis ne peut être validé que s'il est envoyé
 - Un devis expiré ne peut plus être validé
 
 #### Factures
 
 - Une facture ne peut être générée que si :
-  - Le devis est validé
-  - Le dossier est validé
-  - Le nombre exact de participants est connu
+ - Le devis est validé
+ - Le dossier est validé
+ - Le nombre exact de participants est connu
 - Une facture ne peut être validée que par un commercial ou comptable
 - Une facture validée ne peut plus être modifiée
 
@@ -414,9 +414,9 @@
 ### Règles de Synchronisation Odoo
 
 - La synchronisation est automatique pour :
-  - Création de contacts (Teacher, Guest)
-  - Création de leads (nouveaux voyages)
-  - Création de factures (factures validées)
+ - Création de contacts (Teacher, Guest)
+ - Création de leads (nouveaux voyages)
+ - Création de factures (factures validées)
 - En cas d'erreur de synchronisation, un log est créé
 - La synchronisation peut être relancée manuellement
 
@@ -473,9 +473,9 @@ Voir la documentation complète : [Documentation API](08_documentation_api/)
 - **Migrations** : Alembic
 - **Authentification** : JWT (PyJWT), 2FA (pyotp)
 - **Intégrations** : 
-  - Odoo (xmlrpc)
-  - Stripe (stripe)
-  - Email (smtplib)
+ - Odoo (xmlrpc)
+ - Stripe (stripe)
+ - Email (smtplib)
 
 ### Limitations
 

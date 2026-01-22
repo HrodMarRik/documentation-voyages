@@ -8,47 +8,47 @@ Le Modèle Physique de Données (MPD) représente l'implémentation physique de 
 
 ```mermaid
 graph TB
-    subgraph Storage["Stockage Physique"]
-        Tables[Tables MySQL<br/>InnoDB]
-        Indexes[Index B-Tree]
-        Functions[Fonctions Stockées]
-        Procedures[Procédures Stockées]
-    end
-    
-    subgraph Performance["Optimisations"]
-        PrimaryIndex[Index Primaire<br/>Clustered]
-        SecondaryIndex[Index Secondaires<br/>Non-clustered]
-        CompositeIndex[Index Composites]
-        FullTextIndex[Index Full-Text]
-    end
-    
-    subgraph FunctionsLayer["Couche Fonctions SQL"]
-        PricingFuncs[Fonctions Calcul Prix]
-        ValidationFuncs[Fonctions Validation]
-        GenerationFuncs[Fonctions Génération]
-        StatsFuncs[Fonctions Statistiques]
-    end
-    
-    subgraph ApplicationLayer["Couche Application"]
-        ORM[SQLAlchemy ORM]
-        Services[Services Métier]
-        API[API REST]
-    end
-    
-    ApplicationLayer --> FunctionsLayer
-    FunctionsLayer --> Tables
-    FunctionsLayer --> Indexes
-    ApplicationLayer --> Tables
-    ApplicationLayer --> Indexes
-    
-    Tables --> PrimaryIndex
-    Tables --> SecondaryIndex
-    Tables --> CompositeIndex
-    
-    Functions --> PricingFuncs
-    Functions --> ValidationFuncs
-    Functions --> GenerationFuncs
-    Functions --> StatsFuncs
+ subgraph Storage["Stockage Physique"]
+ Tables[Tables MySQL<br/>InnoDB]
+ Indexes[Index B-Tree]
+ Functions[Fonctions Stockées]
+ Procedures[Procédures Stockées]
+ end
+ 
+ subgraph Performance["Optimisations"]
+ PrimaryIndex[Index Primaire<br/>Clustered]
+ SecondaryIndex[Index Secondaires<br/>Non-clustered]
+ CompositeIndex[Index Composites]
+ FullTextIndex[Index Full-Text]
+ end
+ 
+ subgraph FunctionsLayer["Couche Fonctions SQL"]
+ PricingFuncs[Fonctions Calcul Prix]
+ ValidationFuncs[Fonctions Validation]
+ GenerationFuncs[Fonctions Génération]
+ StatsFuncs[Fonctions Statistiques]
+ end
+ 
+ subgraph ApplicationLayer["Couche Application"]
+ ORM[SQLAlchemy ORM]
+ Services[Services Métier]
+ API[API REST]
+ end
+ 
+ ApplicationLayer --> FunctionsLayer
+ FunctionsLayer --> Tables
+ FunctionsLayer --> Indexes
+ ApplicationLayer --> Tables
+ ApplicationLayer --> Indexes
+ 
+ Tables --> PrimaryIndex
+ Tables --> SecondaryIndex
+ Tables --> CompositeIndex
+ 
+ Functions --> PricingFuncs
+ Functions --> ValidationFuncs
+ Functions --> GenerationFuncs
+ Functions --> StatsFuncs
 ```
 
 ## Configuration Physique
@@ -211,11 +211,11 @@ Pour les statistiques complexes, créer des vues matérialisées ou des tables d
 ```sql
 -- Vue matérialisée pour les statistiques de revenus
 CREATE TABLE revenue_stats_cache (
-    period_start DATE,
-    period_end DATE,
-    total_revenue DECIMAL(10,2),
-    last_updated TIMESTAMP,
-    PRIMARY KEY (period_start, period_end)
+ period_start DATE,
+ period_end DATE,
+ total_revenue DECIMAL(10,2),
+ last_updated TIMESTAMP,
+ PRIMARY KEY (period_start, period_end)
 );
 ```
 
@@ -232,34 +232,34 @@ INDEX idx_travels_status_type (status, travel_type)
 
 ```mermaid
 graph TB
-    subgraph Layer1["Couche 1: Fonctions de Base"]
-        F1[calculate_transport_price]
-        F2[calculate_activities_price]
-        F3[calculate_lodging_price]
-        F4[calculate_participant_discount]
-    end
-    
-    subgraph Layer2["Couche 2: Fonctions Composites"]
-        F5[calculate_base_price]
-        F6[calculate_travel_price_with_discounts]
-        F7[calculate_final_travel_price]
-    end
-    
-    subgraph Layer3["Couche 3: Fonctions Métier"]
-        F8[can_generate_quote]
-        F9[can_generate_invoice]
-        F10[is_travel_valid_for_confirmation]
-    end
-    
-    subgraph Layer4["Couche 4: Procédures Stockées"]
-        P1[sp_generate_quote_for_travel]
-        P2[sp_generate_invoice_from_quote]
-        P3[sp_update_travel_status]
-    end
-    
-    Layer1 --> Layer2
-    Layer2 --> Layer3
-    Layer3 --> Layer4
+ subgraph Layer1["Couche 1: Fonctions de Base"]
+ F1[calculate_transport_price]
+ F2[calculate_activities_price]
+ F3[calculate_lodging_price]
+ F4[calculate_participant_discount]
+ end
+ 
+ subgraph Layer2["Couche 2: Fonctions Composites"]
+ F5[calculate_base_price]
+ F6[calculate_travel_price_with_discounts]
+ F7[calculate_final_travel_price]
+ end
+ 
+ subgraph Layer3["Couche 3: Fonctions Métier"]
+ F8[can_generate_quote]
+ F9[can_generate_invoice]
+ F10[is_travel_valid_for_confirmation]
+ end
+ 
+ subgraph Layer4["Couche 4: Procédures Stockées"]
+ P1[sp_generate_quote_for_travel]
+ P2[sp_generate_invoice_from_quote]
+ P3[sp_update_travel_status]
+ end
+ 
+ Layer1 --> Layer2
+ Layer2 --> Layer3
+ Layer3 --> Layer4
 ```
 
 ### Hiérarchie des Fonctions
@@ -312,20 +312,20 @@ from sqlalchemy import text
 
 # Appel direct d'une fonction
 result = db.execute(
-    text("SELECT calculate_final_travel_price(:travel_id)"),
-    {"travel_id": 123}
+ text("SELECT calculate_final_travel_price(:travel_id)"),
+ {"travel_id": 123}
 ).scalar()
 
 # Utilisation dans une requête
 travels = db.execute(
-    text("""
-        SELECT 
-            id,
-            name,
-            calculate_final_travel_price(id) AS total_price
-        FROM travels
-        WHERE status = 'draft'
-    """)
+ text("""
+ SELECT 
+ id,
+ name,
+ calculate_final_travel_price(id) AS total_price
+ FROM travels
+ WHERE status = 'draft'
+ """)
 ).fetchall()
 ```
 
@@ -405,8 +405,8 @@ Toutes les fonctions valident leurs paramètres d'entrée :
 ```sql
 -- Exemple de validation dans une fonction
 IF p_travel_id IS NULL OR p_travel_id <= 0 THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'travel_id invalide';
+ SIGNAL SQLSTATE '45000'
+ SET MESSAGE_TEXT = 'travel_id invalide';
 END IF;
 ```
 

@@ -71,9 +71,9 @@ Ce document présente les diagrammes de cas d'utilisation (Use Case) du système
 1. Commercial demande la validation du planning
 2. Système appelle `is_planning_valid(travel_id)`
 3. Système vérifie :
-   - `has_valid_planning()` : Au moins une activité
-   - `has_overlapping_activities()` : Pas de chevauchement
-   - `planning_covers_travel_days()` : Couvre tous les jours
+ - `has_valid_planning()` : Au moins une activité
+ - `has_overlapping_activities()` : Pas de chevauchement
+ - `planning_covers_travel_days()` : Couvre tous les jours
 4. Si valide, planning est marqué comme validé
 
 **Fonctions SQL utilisées** :
@@ -97,10 +97,10 @@ Ce document présente les diagrammes de cas d'utilisation (Use Case) du système
 2. Système appelle `can_generate_quote(travel_id)`
 3. Si validé, système appelle `sp_generate_quote_for_travel(travel_id, @quote_id)`
 4. Procédure :
-   - Génère le numéro (`generate_quote_number()`)
-   - Calcule le prix (`calculate_final_travel_price()`)
-   - Crée le Quote et les QuoteLines
-   - Met à jour le statut du Travel
+ - Génère le numéro (`generate_quote_number()`)
+ - Calcule le prix (`calculate_final_travel_price()`)
+ - Crée le Quote et les QuoteLines
+ - Met à jour le statut du Travel
 5. Système retourne le devis créé
 
 **Fonctions SQL utilisées** :
@@ -149,8 +149,8 @@ Ce document présente les diagrammes de cas d'utilisation (Use Case) du système
 2. Commercial valide le devis
 3. Système appelle `can_validate_quote(quote_id)`
 4. Système vérifie :
-   - `is_quote_expired()` : Devis non expiré
-   - Statut = SENT
+ - `is_quote_expired()` : Devis non expiré
+ - Statut = SENT
 5. Système met à jour le statut à VALIDATED
 6. Système appelle `sp_update_travel_status()` pour mettre à jour le Travel
 
@@ -198,10 +198,10 @@ Ce document présente les diagrammes de cas d'utilisation (Use Case) du système
 2. Système appelle `can_generate_invoice(travel_id)`
 3. Si validé, système appelle `sp_generate_invoice_from_quote(quote_id, @invoice_id)`
 4. Procédure :
-   - Génère le numéro (`generate_invoice_number()`)
-   - Récupère le total du devis
-   - Calcule la TVA (`calculate_tax_amount()`)
-   - Crée l'Invoice et les InvoiceLines
+ - Génère le numéro (`generate_invoice_number()`)
+ - Récupère le total du devis
+ - Calcule la TVA (`calculate_tax_amount()`)
+ - Crée l'Invoice et les InvoiceLines
 5. Système retourne la facture créée
 
 **Fonctions SQL utilisées** :
