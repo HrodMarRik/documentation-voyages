@@ -1,0 +1,102 @@
+COMMANDES RAPIDES POUR UBUNTU 24
+==================================
+
+1. INSTALLATION COMPLÈTE (une seule fois)
+------------------------------------------
+bash setup_ubuntu.sh
+
+OU manuellement :
+sudo apt update && sudo apt install -y python3 python3-pip python3-venv wget curl git build-essential libssl-dev libffi-dev python3-dev
+mkdir -p ~/annuaire-education-scraper
+cd ~/annuaire-education-scraper
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+playwright install chromium
+
+
+2. ACTIVER L'ENVIRONNEMENT VIRTUEL (à chaque fois)
+--------------------------------------------------
+cd ~/annuaire-education-scraper
+source venv/bin/activate
+
+
+3. PHASE 1 - Récupérer toutes les données des écoles
+------------------------------------------------------
+# Avec script
+chmod +x run_phase1.sh
+./run_phase1.sh
+
+# Ou directement
+python scraper_annuaire.py --no-gui --curl-cffi
+
+# Test sur 10 pages
+python scraper_annuaire.py --no-gui --from-page 0 --to-page 10 --curl-cffi
+
+
+4. PHASE 2 - Récupérer email et téléphone depuis chaque fiche
+----------------------------------------------------------------
+# Avec script
+chmod +x run_phase2.sh
+./run_phase2.sh
+
+# Ou directement
+python scraper_fiches.py --input annuaire_etablissements.csv --output annuaire_etablissements_complet.csv --curl-cffi
+
+# Reprendre depuis la ligne 3979 (après interruption)
+python scraper_fiches.py --from-row 3979 --curl-cffi
+
+# Test sur 10 lignes
+python scraper_fiches.py --from-row 0 --to-row 10 --curl-cffi
+
+
+5. VÉRIFIER L'INSTALLATION
+--------------------------
+source venv/bin/activate
+python -c "import curl_cffi; print('curl_cffi OK')"
+python -c "import bs4; print('beautifulsoup4 OK')"
+python -c "import playwright; print('playwright OK')"
+
+
+6. MODES DE FETCH ALTERNATIFS
+------------------------------
+# Undetected Chrome
+sudo apt install -y chromium-browser
+python scraper_annuaire.py --no-gui --uc
+
+# FlareSolverr (nécessite Docker)
+sudo apt install -y docker.io
+sudo systemctl start docker
+docker run -d -p 8191:8191 ghcr.io/flaresolverr/flaresolverr:latest
+python scraper_annuaire.py --no-gui --flaresolverr
+
+# CDP (Chrome DevTools)
+chromium-browser --remote-debugging-port=9222 &
+python scraper_annuaire.py --no-gui --cdp
+
+
+7. SUIVRE LA PROGRESSION
+-------------------------
+# Voir les dernières lignes du CSV
+tail -n 20 annuaire_etablissements.csv
+
+# Compter les lignes
+wc -l annuaire_etablissements.csv
+
+# Voir la progression (phase 1)
+cat progress.json
+
+
+8. EN CAS DE PROBLÈME
+---------------------
+# Réinstaller les dépendances
+source venv/bin/activate
+pip install -r requirements.txt --force-reinstall
+
+# Réinstaller Playwright
+playwright install chromium --force
+
+# Vérifier Python
+python3 --version
+pip --version

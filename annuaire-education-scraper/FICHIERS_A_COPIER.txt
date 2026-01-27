@@ -1,0 +1,42 @@
+FICHIERS À COPIER SUR UBUNTU
+=============================
+
+Copiez ces fichiers depuis Windows vers Ubuntu (~/annuaire-education-scraper/) :
+
+FICHIERS ESSENTIELS (obligatoires) :
+------------------------------------
+✓ scraper_annuaire.py          - Script phase 1 (liste des écoles)
+✓ scraper_fiches.py             - Script phase 2 (email/téléphone depuis fiches)
+✓ requirements.txt              - Dépendances Python
+✓ README.md                     - Documentation
+✓ INSTALL_UBUNTU.md             - Instructions d'installation Ubuntu
+✓ setup_ubuntu.sh               - Script d'installation automatique
+
+FICHIERS OPTIONNELS :
+---------------------
+  test_fetch_page.py            - Test de récupération d'une page
+  fetch_curl.sh                  - Script shell pour curl
+  fetch_dom_chrome.sh            - Script shell pour Chrome dump-dom
+
+FICHIERS DE DONNÉES (si vous avez déjà commencé) :
+--------------------------------------------------
+  annuaire_etablissements.csv    - CSV de la phase 1 (si déjà généré)
+  annuaire_etablissements_complet.csv - CSV de la phase 2 (si déjà généré)
+  progress.json                  - Progression phase 1 (si déjà généré)
+
+COMMENT COPIER :
+----------------
+
+Méthode 1 : SCP (depuis Windows avec Git Bash ou WSL)
+  scp -r annuaire-education-scraper/* user@ubuntu-ip:~/annuaire-education-scraper/
+
+Méthode 2 : USB / Partage réseau
+  Copier le dossier complet vers Ubuntu
+
+Méthode 3 : Git (si vous avez un dépôt)
+  git clone <url> ~/annuaire-education-scraper
+
+Méthode 4 : Fichier ZIP
+  - Créer un ZIP avec les fichiers essentiels
+  - Transférer le ZIP vers Ubuntu
+  - Décompresser : unzip fichier.zip -d ~/annuaire-education-scraper
